@@ -1,14 +1,4 @@
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-const app = express();
-
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.json({ message: 'API Funcionando!' });
-});
+import { app } from "./src/app";
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
