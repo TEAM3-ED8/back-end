@@ -37,7 +37,7 @@
 4. write to .env
 
    ```bash
-   DATABASE_URL="postgresql://johndoe:randompassword@localhost:5432/mydb?schema=public"
+   DATABASE_URL="postgresql://postgres:PpVknpeLsATaSpBPvAGPgveCUqtMSDwc@junction.proxy.rlwy.net:29280/railway"
    ```
 
 5. run the project
