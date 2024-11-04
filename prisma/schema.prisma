@@ -12,3 +12,59 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Elves {
+  id     Int    @id @default(autoincrement())
+  name   String
+  height String
+  age    Int
+}
+
+model Addresse {
+  id        Int         @id @default(autoincrement())
+  country   String
+  city      String
+  code      String
+  Searches  Searches[]
+  Childrens Childrens[]
+}
+
+model Searches {
+  id          Int      @id @default(autoincrement())
+  searched_in DateTime @default(now())
+  address     Addresse @relation(fields: [address_id], references: [id])
+  address_id  Int
+}
+
+model Childrens {
+  id         Int      @id @default(autoincrement())
+  name       String
+  age        Int
+  conduct    String
+  address    Addresse @relation(fields: [address_id], references: [id])
+  address_id Int
+  gift       Boolean
+  Card       Card[]
+}
+
+model Card {
+  id          Int       @id @default(autoincrement())
+  content     String
+  create_at   DateTime  @default(now())
+  children    Childrens @relation(fields: [children_id], references: [id])
+  children_id Int
+}
+
+model Range {
+  id       Int        @id @default(autoincrement())
+  range    String
+  Reindeer Reindeer[]
+}
+
+model Reindeer {
+  id                 Int    @id @default(autoincrement())
+  name               String
+  description_of_use String
+  range              Range  @relation(fields: [range_id], references: [id])
+  range_id           Int
+}
