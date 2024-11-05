@@ -1,4 +1,4 @@
-import { Reindeer } from "../interfaces/reindeer.interface"
+import { Reindeer } from "@prisma/client"
 import { prisma } from "../prisma"
 export const createReindeer = async ({
   name,

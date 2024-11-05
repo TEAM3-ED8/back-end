@@ -6,7 +6,7 @@ import {
   getByIdElve,
   updateElve
 } from "../models/ElvesModel"
-import { Elve } from "../interfaces/elve.interface"
+import { Elves } from "@prisma/client"
 
 export const getAll = async (req: Request, res: Response) => {
   try {
@@ -32,7 +32,7 @@ export const getById = async (req: Request, res: Response) => {
 
 export const create = async (req: Request, res: Response) => {
   try {
-    const elve: Elve = req.body
+    const elve: Elves = req.body
     const elveCreate = await createElve(elve)
     res.json(elveCreate)
   } catch (error) {
@@ -42,7 +42,7 @@ export const create = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const elve: Elve = req.body
+    const elve: Elves = req.body
 
     const elveUpdate = await updateElve(Number(id), elve)
     res.json(elveUpdate)
