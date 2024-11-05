@@ -1,4 +1,4 @@
-import { Elve } from "../interfaces/Elve"
+import { Elve } from "../interfaces/elve.interface"
 import { prisma } from "../prisma"
 
 export const createElve = async (elve: Elve) => {

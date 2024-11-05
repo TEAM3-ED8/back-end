@@ -58,7 +58,7 @@ model Card {
 model Range {
   id       Int        @id @default(autoincrement())
   range    String
-  Reindeer Reindeer[]
+  reindeer Reindeer[]
 }
 
 model Reindeer {
