@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  title: API Documentation
+  version: 1.0.0
+  description: Backned API
+servers:
+  - url: http://localhost:3000/api
+    description: Servidor de desarrollo
+paths:
+  /range:
+    post:
+      summary: Crea un nuevo rango
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                range:
+                  type: string
+      responses:
+        '200':
+          description: Rango creado exitosamente
+    get:
+      summary: Obtiene todos los rangos
+      responses:
+        '200':
+          description: Lista de rangos
+  /range/{id}:
+    get:
+      summary: Obtiene un rango por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Rango encontrado
+        '404':
+          description: Rango no encontrado
+    put:
+      summary: Actualiza un rango
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                range:
+                  type: string
+      responses:
+        '200':
+          description: Rango actualizado exitosamente
+    delete:
+      summary: Elimina un rango
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Rango eliminado exitosamente
