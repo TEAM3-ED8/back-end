@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { create, getAll, getById, remove, update } from "../controllers/RangeController"
+import { create, getAll, getById, remove, update } from "../controllers/RangesController"
 
 export const createRangeRouter = () => {
   const router = Router()
