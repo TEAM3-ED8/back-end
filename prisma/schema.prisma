@@ -26,7 +26,7 @@ model Addresse {
   city      String
   code      String
   Searches  Searches[]
-  Childrens Childrens[]
+  childrens Childrens[]
 }
 
 model Searches {
@@ -44,7 +44,7 @@ model Childrens {
   address    Addresse @relation(fields: [address_id], references: [id])
   address_id Int
   gift       Boolean
-  Card       Card[]
+  card       Card[]
 }
 
 model Card {
