@@ -1,9 +1,10 @@
-import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import swaggerJsDoc from 'swagger-jsdoc';
 import { Express } from 'express';
+import path from 'path';
 
 const options = {
-  swaggerDefinition: {
+  definition: {
     openapi: '3.0.0',
     info: {
       title: 'Inventory System API',
@@ -16,7 +17,7 @@ const options = {
       },
     ],
   },
-  apis: ['./openapi.yaml'],
+  apis: [path.join(__dirname, './openapi.yaml')],
 };
 
 const specs = swaggerJsDoc(options);
