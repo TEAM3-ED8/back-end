@@ -44,3 +44,7 @@ export const deleteReindeer = async ({ id }: { id: number }) => {
     where: { id }
   })
 }
+
+export const getIncludesID = async ({ ids }: { ids: number[] }) => {
+  return await prisma.reindeer.findMany({ where: { id: { in: ids } } })
+}
