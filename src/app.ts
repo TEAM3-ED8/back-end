@@ -3,7 +3,8 @@ export const app = express()
 import { createRangeRouter } from "./routes/range.routes"
 import { createElveRouter } from "./routes/elve.routes"
 import { createReindeerRouter } from "./routes/reindeer.routes"
-
+import { corsMiddleware } from "./middlewares/cors"
+app.use(corsMiddleware)
 app.use(express.json())
 
 app.get("/", (req, res) => {
