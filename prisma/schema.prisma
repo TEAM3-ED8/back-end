@@ -20,7 +20,7 @@ model Elves {
   age    Int
 }
 
-model Addresse {
+model Addresses {
   id        Int         @id @default(autoincrement())
   country   String
   city      String
@@ -32,7 +32,7 @@ model Addresse {
 model Searches {
   id          Int      @id @default(autoincrement())
   searched_in DateTime @default(now())
-  address     Addresse @relation(fields: [address_id], references: [id])
+  address     Addresses @relation(fields: [address_id], references: [id])
   address_id  Int
 }
 
@@ -41,7 +41,7 @@ model Childrens {
   name       String
   age        Int
   conduct    String
-  address    Addresse @relation(fields: [address_id], references: [id])
+  address    Addresses @relation(fields: [address_id], references: [id])
   address_id Int
   gift       Boolean
   card       Card[]
