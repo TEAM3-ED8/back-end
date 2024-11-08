@@ -1,150 +1,150 @@
-openapi: 3.0.0
-info:
-  title: API Documentation
-  version: 1.0.0
-  description: Backend API
-servers:
-  - url: http://localhost:3000/api
-    description: Servidor de desarrollo
-paths:
-  /range:
-    post:
-      summary: Crea un nuevo rango
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Range'
-      responses:
-        '200':
-          description: Rango creado exitosamente
-    get:
-      summary: Obtiene todos los rangos
-      responses:
-        '200':
-          description: Lista de rangos
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Range'
-  /range/{id}:
-    get:
-      summary: Obtiene un rango por ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: ID del rango
-      responses:
-        '200':
-          description: Rango obtenido exitosamente
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Range'
-        '404':
-          description: Rango no encontrado
+# openapi: 3.0.0
+# info:
+#   title: API Documentation
+#   version: 1.0.0
+#   description: Backend API
+# servers:
+#   - url: http://localhost:3000/api
+#     description: Servidor de desarrollo
+# paths:
+#   /range:
+#     post:
+#       summary: Crea un nuevo rango
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/Range'
+#       responses:
+#         '200':
+#           description: Rango creado exitosamente
+#     get:
+#       summary: Obtiene todos los rangos
+#       responses:
+#         '200':
+#           description: Lista de rangos
+#           content:
+#             application/json:
+#               schema:
+#                 type: array
+#                 items:
+#                   $ref: '#/components/schemas/Range'
+#   /range/{id}:
+#     get:
+#       summary: Obtiene un rango por ID
+#       parameters:
+#         - in: path
+#           name: id
+#           required: true
+#           schema:
+#             type: integer
+#           description: ID del rango
+#       responses:
+#         '200':
+#           description: Rango obtenido exitosamente
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/Range'
+#         '404':
+#           description: Rango no encontrado
 
-  /elves:
-    get:
-      summary: Obtiene todos los elfos
-      responses:
-        '200':
-          description: Lista de elfos
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Elve'
-    post:
-      summary: Crea un nuevo elfo
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Elve'
-      responses:
-        '200':
-          description: Elfo creado exitosamente
-  /elves/{id}:
-    get:
-      summary: Obtiene un elfo por ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: ID del elfo
-      responses:
-        '200':
-          description: Elfo obtenido exitosamente
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Elve'
-        '404':
-          description: Elfo no encontrado
-    put:
-      summary: Actualiza un elfo por ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: ID del elfo
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Elve'
-      responses:
-        '200':
-          description: Elfo actualizado exitosamente
-    delete:
-      summary: Elimina un elfo por ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: ID del elfo
-      responses:
-        '204':
-          description: Elfo eliminado exitosamente
-components:
-  schemas:
-    Range:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        range:
-          type: string
-          example: "A-B"
-    Elve:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: Legolas
-        height:
-          type: string
-          example: 6ft
-        age:
-          type: integer
-          example: 2931
+#   /elves:
+#     get:
+#       summary: Obtiene todos los elfos
+#       responses:
+#         '200':
+#           description: Lista de elfos
+#           content:
+#             application/json:
+#               schema:
+#                 type: array
+#                 items:
+#                   $ref: '#/components/schemas/Elve'
+#     post:
+#       summary: Crea un nuevo elfo
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/Elve'
+#       responses:
+#         '200':
+#           description: Elfo creado exitosamente
+#   /elves/{id}:
+#     get:
+#       summary: Obtiene un elfo por ID
+#       parameters:
+#         - in: path
+#           name: id
+#           required: true
+#           schema:
+#             type: integer
+#           description: ID del elfo
+#       responses:
+#         '200':
+#           description: Elfo obtenido exitosamente
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/Elve'
+#         '404':
+#           description: Elfo no encontrado
+#     put:
+#       summary: Actualiza un elfo por ID
+#       parameters:
+#         - in: path
+#           name: id
+#           required: true
+#           schema:
+#             type: integer
+#           description: ID del elfo
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/Elve'
+#       responses:
+#         '200':
+#           description: Elfo actualizado exitosamente
+#     delete:
+#       summary: Elimina un elfo por ID
+#       parameters:
+#         - in: path
+#           name: id
+#           required: true
+#           schema:
+#             type: integer
+#           description: ID del elfo
+#       responses:
+#         '204':
+#           description: Elfo eliminado exitosamente
+# components:
+#   schemas:
+#     Range:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           example: 1
+#         range:
+#           type: string
+#           example: "A-B"
+#     Elve:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           example: 1
+#         name:
+#           type: string
+#           example: Legolas
+#         height:
+#           type: string
+#           example: 6ft
+#         age:
+#           type: integer
+#           example: 2931
