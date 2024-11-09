@@ -14,10 +14,13 @@ datasource db {
 }
 
 model Elves {
-  id     Int    @id @default(autoincrement())
-  name   String
-  height String
-  age    Int
+  id        Int     @id @default(autoincrement())
+  name      String
+  age       String
+  address   String
+  height    String
+  mail      String
+  isDeleted Boolean @default(false)
 }
 
 model Addresses {
@@ -25,7 +28,7 @@ model Addresses {
   country   String
   city      String
   code      String
-  Searches  Searches[]
+  searches  Searches[]
   childrens Childrens[]
 }
 
