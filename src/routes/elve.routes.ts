@@ -1,14 +1,14 @@
-import { Router } from "express";
+import { Router } from "express"
 import {
   getAll,
   create,
   getById,
   remove,
   update
-} from "../controllers/ElvesController";
+} from "../controllers/ElvesController"
 
 export const createElveRouter = () => {
-  const router = Router();
+  const router = Router()
 
   /**
    * @swagger
@@ -19,7 +19,7 @@ export const createElveRouter = () => {
    *       200:
    *         description: Lista de elfos
    */
-  router.get("/", getAll);
+  router.get("/", getAll)
 
   /**
    * @swagger
@@ -41,7 +41,7 @@ export const createElveRouter = () => {
    *       201:
    *         description: Elfo creado exitosamente
    */
-  router.post("/", create);
+  router.post("/", create)
 
   /**
    * @swagger
@@ -60,7 +60,7 @@ export const createElveRouter = () => {
    *       404:
    *         description: Elfo no encontrado
    */
-  router.get("/:id", getById);
+  router.get("/:id", getById)
 
   /**
    * @swagger
@@ -90,7 +90,7 @@ export const createElveRouter = () => {
    *       500:
    *         description: Error actualizando el elfo
    */
-  router.put("/:id", update);
+  router.put("/:id", update)
 
   /**
    * @swagger
@@ -109,7 +109,7 @@ export const createElveRouter = () => {
    *       500:
    *         description: Error eliminando el elfo
    */
-  router.delete("/:id", remove);
+  router.get("/delete/:id", remove)
 
-  return router;
-};
+  return router
+}
