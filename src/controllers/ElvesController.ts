@@ -4,9 +4,10 @@ import {
   deleteElve,
   getAllElves,
   getByIdElve,
-  updateElve
+  updateElve,
+  createElveType,
+  updateElveType
 } from "../models/ElvesModel"
-import { Elves } from "@prisma/client"
 
 export const getAll = async (req: Request, res: Response) => {
   try {
@@ -16,9 +17,14 @@ export const getAll = async (req: Request, res: Response) => {
     res.sendStatus(500)
   }
 }
+
 export const getById = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params
+    const id = parseInt(req.params.id)
+    if (isNaN(id)) {
+      res.status(404).json({ msg: "Invalid ID" })
+      return
+    }
     const elve = await getByIdElve({ id: Number(id) })
     if (!elve) {
       res.status(404).json({ msg: "Elve not found" })
@@ -32,29 +38,54 @@ export const getById = async (req: Request, res: Response) => {
 
 export const create = async (req: Request, res: Response) => {
   try {
-    const elve: Elves = req.body
-    const elveCreate = await createElve(elve)
+    const { name, age, address, height, mail }: createElveType = req.body
+    if (!name || !age || !address || !height || !mail) {
+      res.status(404).json({ msg: "All fields are required" })
+      return
+    }
+    const elveCreate = await createElve({ name, age, address, height, mail })
     res.json(elveCreate)
   } catch (error) {
+    console.log(error)
     res.sendStatus(500)
   }
 }
+
 export const update = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params
-    const elve: Elves = req.body
-
-    const elveUpdate = await updateElve(Number(id), elve)
+    const id = parseInt(req.params.id)
+    if (isNaN(id)) {
+      res.status(404).json({ msg: "Invalid ID" })
+      return
+    }
+    const elve = await getByIdElve({ id })
+    if (!elve) {
+      res.status(404).json({ msg: "Elve not found" })
+      return
+    }
+    const data: updateElveType = req.body
+    elve.id = id
+    const elveUpdate = await updateElve(data)
     res.json(elveUpdate)
   } catch (error) {
     res.status(500).json({ error: "Error updating elve" })
   }
 }
+
 export const remove = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params
-    await deleteElve({ id: Number(id) })
-    res.sendStatus(204)
+    const id = parseInt(req.params.id)
+    if (isNaN(id)) {
+      res.status(404).json({ msg: "Invalid ID" })
+      return
+    }
+    const elve = await getByIdElve({ id })
+    if (!elve) {
+      res.status(404).json({ msg: "Elve not found" })
+      return
+    }
+    await deleteElve({ id, currentValue: elve.isDeleted })
+    res.sendStatus(200)
   } catch (error) {
     res.sendStatus(500)
   }
