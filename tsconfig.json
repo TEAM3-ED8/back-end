@@ -2,12 +2,10 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "outDir": "./dist",
+    "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
     "allowImportingTsExtensions": false,
-    "moduleResolution": "node",
-    "jsx": "react", 
-    "skipLibCheck": true 
+    "moduleResolution": "node"
   }
 }
