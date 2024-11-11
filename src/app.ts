@@ -37,6 +37,7 @@ app.use("/api/range", createRangeRouter())
 app.use("/api/elve", createElveRouter())
 app.use("/api/reindeer", createReindeerRouter())
 app.use("/api/cards", createCardsRouter())
+app.use("/api/childrens", createChildrensRouter())
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack)
