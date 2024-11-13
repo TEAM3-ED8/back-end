@@ -53,6 +53,7 @@ app.use("/api/reindeer", createReindeerRouter())
 app.use("/api/address", createAddressRouter())
 app.use("/api/range", createRangeRouter())
 app.use("/api/cards", createCardsRouter())
+app.use("/api/childrens", createChildrensRouter())
 
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
