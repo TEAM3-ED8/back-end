@@ -26,3 +26,11 @@ export const updateAddress = async (
 export const deleteAddress = async ({ id }: Addresses["id"]) => {
   return await prisma.addresses.delete({ where: { id } })
 }
+
+export const filterLatestSearches = async ({ limit }: { limit: number }) => {
+  return await prisma.addresses.findMany({
+    select: addresses,
+    orderBy: { search_date: "desc" },
+    take: limit
+  })
+}

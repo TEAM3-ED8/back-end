@@ -3,6 +3,7 @@ import type { Request, Response } from "express"
 import {
   createAddress,
   deleteAddress,
+  filterLatestSearches,
   getAllAddress,
   getByIdAddress,
   updateAddress
@@ -10,7 +11,15 @@ import {
 
 export const getAll = async (req: Request, res: Response) => {
   try {
-    const allAddresses: Addresses[] = await getAllAddress()
+    const { limit } = req.query
+    let allAddresses: Addresses[] = []
+
+    if (limit) {
+      allAddresses = await filterLatestSearches({ limit: Number(limit) })
+    } else {
+      allAddresses = await getAllAddress()
+    }
+
     res.json(allAddresses)
   } catch (error) {
     res.sendStatus(500)

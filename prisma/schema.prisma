@@ -25,6 +25,7 @@ model Addresses {
   country   String
   city      String
   code      String
+  search_date DateTime @default(now())
   Searches  Searches[]
   childrens Childrens[]
 }

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Addresses" ADD COLUMN     "search_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
