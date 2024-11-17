@@ -1,20 +1,20 @@
 import { Router } from "express"
 import {
-  create,
-  getAll,
-  getById,
-  remove,
-  update
+  createAddress,
+  getAllAddress,
+  getByIdAddress,
+  deleteAddress,
+  updateAddress
 } from "../controllers/AddressesController"
 
 export const createAddressRouter = () => {
   const router = Router()
 
-  router.get("/", getAll)
-  router.get("/:id", getById)
-  router.post("/", create)
-  router.put("/:id", update)
-  router.delete("/:id", remove)
+  router.get("/", getAllAddress)
+  router.get("/:id", getByIdAddress)
+  router.post("/", createAddress)
+  router.put("/:id", updateAddress)
+  router.delete("/:id", deleteAddress)
 
   return router
 }

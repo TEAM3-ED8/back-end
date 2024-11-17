@@ -4,6 +4,7 @@ import { createRangeRouter } from "./routes/range.routes"
 import { createElveRouter } from "./routes/elve.routes"
 import { createReindeerRouter } from "./routes/reindeer.routes"
 import { createAddressRouter } from "./routes/address.routes"
+import { errorResponse } from "./utilities/error-response"
 
 app.use(express.json())
 
@@ -27,6 +28,9 @@ app.use("/api/reindeer", createReindeerRouter())
 app.use("/api/address", createAddressRouter())
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack)
-  res.status(500).json({ error: "Internal Server Error" })
+  const { statusCode, message, description } = err
+
+  errorResponse(res, statusCode, message, description)
+  //console.error(err.stack)
+  // res.status(500).json({ error: "Internal Server Error" })
 })
