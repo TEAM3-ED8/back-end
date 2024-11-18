@@ -6,7 +6,7 @@ import {
   update
 } from "../controllers/ChildrensController"
 
-export const createChildrenRouter = () => {
+export const createChildrensRouter = () => {
   const router = Router()
 
   router.post("/", create)

@@ -2,7 +2,6 @@ import express, { Request, Response, NextFunction } from "express"
 import { corsMiddleware } from "./middlewares/cors"
 import swaggerJsDoc from "swagger-jsdoc"
 import swaggerUi from "swagger-ui-express"
-import { create } from "domain"
 import {
   createCardsRouter,
   createElveRouter,
@@ -12,10 +11,8 @@ import {
 
 export const app = express()
 
-import { createRangeRouter } from "./routes/range.routes"
-import { createElveRouter } from "./routes/elve.routes"
-import { createReindeerRouter } from "./routes/reindeer.routes"
 import { createAddressRouter } from "./routes/address.routes"
+import { createChildrensRouter } from "./routes/children.routes"
 
 app.use(corsMiddleware)
 app.use(express.json())
