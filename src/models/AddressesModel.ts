@@ -5,7 +5,7 @@ export const getAllAddress = async () => {
   return await prisma.addresses.findMany()
 }
 
-export const getByIdAddress = async ({ id }: Addresses["id"]) => {
+export const getByIdAddress = async ({ id }: {id:number}) => {
   return await prisma.addresses.findUnique({ where: { id } })
 }
 
@@ -23,6 +23,6 @@ export const updateAddress = async (
   })
 }
 
-export const deleteAddress = async ({ id }: Addresses["id"]) => {
+export const deleteAddress = async ({ id }:{id:number} ) => {
   return await prisma.addresses.delete({ where: { id } })
 }
