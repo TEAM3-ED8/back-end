@@ -20,7 +20,7 @@ export const getAll = async (req: Request, res: Response) => {
 export const getById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const address: Addresses = await getByIdAddress({ id: Number(id) })
+    const address = await getByIdAddress({ id: Number(id) })
 
     if (!address) {
       res.status(404).json({ msg: "Address not found" })
