@@ -7,7 +7,7 @@ export const getAllAddress = async () => {
   return addresses
 }
 
-export const getByIdAddress = async ({ id }: Addresses["id"]) => {
+export const getByIdAddress = async ({ id }:{id:number}) => {
   const address = await prisma.addresses.findUnique({ where: { id } })
 
   if (!address)
@@ -36,7 +36,7 @@ export const updateAddress = async (
   })
 }
 
-export const deleteAddress = async ({ id }: Addresses["id"]) => {
+export const deleteAddress = async ({ id }:{id:number}) => {
   await getByIdAddress({ id })
 
   return await prisma.addresses.delete({ where: { id } })
@@ -45,13 +45,13 @@ export const deleteAddress = async ({ id }: Addresses["id"]) => {
 export const filterLatestSearches = async ({ limit }: { limit: number }) => {
   return await prisma.addresses.findMany({
     select: {
-      id,
-      country,
-      city,
-      code,
-      search_date
+      id: true,
+      country: true,
+      city: true,
+      code: true,
+      search_date: true
     },
     orderBy: { search_date: "desc" },
     take: limit
-  })
-}
+  });
+};
