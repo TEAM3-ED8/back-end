@@ -4,13 +4,6 @@ import { ClientError, ServerError } from "../utilities/errors"
 
 export const getAllAddress = async () => {
   const addresses: Addresses[] = await prisma.addresses.findMany()
-
-  /* if (!addresses)
-    throw new ServerError(
-      "Internal Server Error",
-      500,
-      "Error accessing database"
-    ) */
   return addresses
 }
 

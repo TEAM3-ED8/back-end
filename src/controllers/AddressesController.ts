@@ -15,8 +15,9 @@ import { ClientError } from "../utilities/errors"
 export const getAllAddress = async (req: Request, res: Response) => {
   const { limit } = req.query
 
-  if (limit && isNaN(Number(limit)))
+  if (isNaN(Number(limit)) || !limit) {
     throw new ClientError("Invalid limit", 400, "Limit must be a Number")
+  }
 
   let allAddresses: Addresses[] = []
 
@@ -27,11 +28,6 @@ export const getAllAddress = async (req: Request, res: Response) => {
   }
 
   dataResponse(res, 200, allAddresses, "Addresses obtained successfully")
-  /* try {
-  } catch (error) {
-  res.status(200).json(allAddresses)
-  res.sendStatus(500)
-  } */
 }
 
 export const getByIdAddress = catchedAsync(
@@ -39,17 +35,6 @@ export const getByIdAddress = catchedAsync(
     const { id } = req.params
     const address: Addresses = await getByIdAddress({ id: Number(id) })
     dataResponse(res, 200, address, "Address successfully obtained")
-
-    /* try {
-    if (!address) {
-    res.status(404).json({ msg: "Address not found" })
-    return
-    }
-    res.status(200).json(address)
-    } catch (error) {
-    res.sendStatus(500)
-    next(error)
-    } */
   }
 )
 
@@ -71,15 +56,6 @@ export const createAddress = async (req: Request, res: Response) => {
 
   const createdAddress: Addresses = await createAddress(address)
   dataResponse(res, 201, createAddress, "Address created successfully")
-
-  /**
-  try {
-    const address: Addresses = req.body
-    const createdAddress: Addresses = await createAddress(address)
-    res.json(createAddress)
-  } catch (error) {
-    res.sendStatus(500)
-  }*/
 }
 
 export const updateAddress = async (req: Request, res: Response) => {
@@ -105,11 +81,6 @@ export const updateAddress = async (req: Request, res: Response) => {
 
   const updatedAddress: Addresses = await updateAddress(Number(id), address)
   dataResponse(res, 200, updateAddress, "Address updated successfully")
-  /* try {
-  res.json(updatedAddress)
-  } catch (error) {
-  res.status(500).json({ error: "Error updating address" })
-  } */
 }
 
 export const deleteAddress = async (req: Request, res: Response) => {
@@ -120,9 +91,4 @@ export const deleteAddress = async (req: Request, res: Response) => {
 
   const deleteAddress = await deleteAddress({ id: Number(id) })
   dataResponse(res, 200, updateAddress, "Address deleted successfully")
-  /* try {
-    res.sendStatus(204)
-  } catch (error) {
-    res.sendStatus(500)
-  } */
 }
