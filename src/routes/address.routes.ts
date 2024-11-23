@@ -2,6 +2,7 @@ import { Router } from "express"
 import {
   create,
   getAll,
+  getByDate,
   getById,
   remove,
   update
@@ -15,6 +16,7 @@ export const createAddressRouter = () => {
   router.post("/", create)
   router.put("/:id", update)
   router.delete("/:id", remove)
+  router.get("/search/:search_date", getByDate)
 
   return router
 }
