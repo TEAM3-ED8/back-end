@@ -7,7 +7,7 @@ export const getAllAddress = async () => {
   return addresses
 }
 
-export const getByIdAddress = async ({ id }:{id:number}) => {
+export const getByIdAddress = async ({ id }: { id: number }) => {
   const address = await prisma.addresses.findUnique({ where: { id } })
 
   if (!address)
@@ -36,7 +36,7 @@ export const updateAddress = async (
   })
 }
 
-export const deleteAddress = async ({ id }:{id:number}) => {
+export const deleteAddress = async ({ id }: { id: number }) => {
   await getByIdAddress({ id })
 
   return await prisma.addresses.delete({ where: { id } })
@@ -46,12 +46,39 @@ export const filterLatestSearches = async ({ limit }: { limit: number }) => {
   return await prisma.addresses.findMany({
     select: {
       id: true,
-      country: true,
-      city: true,
-      code: true,
+      lat: true,
+      lng: true,
+      display_name: true,
       search_date: true
     },
     orderBy: { search_date: "desc" },
     take: limit
-  });
-};
+  })
+}
+
+export const filterBySearchDate = async ({
+  searchDate
+}: {
+  searchDate: Addresses["search_date"]
+}) => {
+  const address: Addresses = await prisma.addresses.findFirst({
+    select: {
+      id: true,
+      lat: true,
+      lng: true,
+      display_name: true,
+      search_date: true
+    },
+    where: {
+      search_date: searchDate
+    }
+  })
+
+  if (!address)
+    throw new ClientError(
+      "Address not found",
+      404,
+      "No Address found with the date provided"
+    )
+  return address
+}
