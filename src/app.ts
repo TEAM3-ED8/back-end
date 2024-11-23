@@ -5,6 +5,7 @@ import swaggerUi from "swagger-ui-express"
 import {
   createCardsRouter,
   createElveRouter,
+  createMemberRouter,
   createRangeRouter,
   createReindeerRouter
 } from "./routes"
@@ -15,7 +16,6 @@ import { createAddressRouter } from "./routes/address.routes"
 
 import { errorResponse } from "./utilities/error-response"
 import { createChildrensRouter } from "./routes/children.routes"
-
 
 app.use(corsMiddleware)
 app.use(express.json())
@@ -37,8 +37,6 @@ app.get("/", (req, res) => {
   res.json({ message: "API Funcionando!" })
 })
 
-
-
 app.use(
   "/api/range",
   (req, res, next) => {
@@ -54,7 +52,7 @@ app.use("/api/address", createAddressRouter())
 app.use("/api/range", createRangeRouter())
 app.use("/api/cards", createCardsRouter())
 app.use("/api/childrens", createChildrensRouter())
-
+app.use("/api/member", createMemberRouter())
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const { statusCode, message, description } = err

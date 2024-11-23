@@ -73,3 +73,13 @@ model Reindeer {
   range              Range  @relation(fields: [range_id], references: [id])
   range_id           Int
 }
+
+model Members {
+  id          Int @id @default(autoincrement())
+  name        String
+  image       String
+  role        String
+  message     String
+  github      String
+  linkedin    String
+}
