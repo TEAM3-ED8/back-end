@@ -12,7 +12,10 @@ import {
 export const app = express()
 
 import { createAddressRouter } from "./routes/address.routes"
+
+import { errorResponse } from "./utilities/error-response"
 import { createChildrensRouter } from "./routes/children.routes"
+
 
 app.use(corsMiddleware)
 app.use(express.json())
@@ -54,6 +57,9 @@ app.use("/api/childrens", createChildrensRouter())
 
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack)
-  res.status(500).json({ error: "Internal Server Error" })
+  const { statusCode, message, description } = err
+
+  errorResponse(res, statusCode, message, description)
+  //console.error(err.stack)
+  // res.status(500).json({ error: "Internal Server Error" })
 })

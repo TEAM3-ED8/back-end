@@ -24,12 +24,13 @@ model Elves {
 }
 
 model Addresses {
-  id        Int         @id @default(autoincrement())
-  country   String
-  city      String
-  code      String
-  searches  Searches[]
-  childrens Childrens[]
+  id            Int         @id @default(autoincrement())
+  lat           String
+  lng           String
+  display_name  String
+  search_date   DateTime @default(now())
+  searches      Searches[]
+  childrens     Childrens[]
 }
 
 model Searches {
