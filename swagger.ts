@@ -2,6 +2,7 @@
 // import swaggerJsDoc from 'swagger-jsdoc';
 // import { Express } from 'express';
 // import path from 'path';
+// const isProduction = process.env.NODE_ENV === 'production';
 
 // const options = {
 //   definition: {
@@ -13,23 +14,15 @@
 //     },
 //     servers: [
 //       {
-//         url: 'http://localhost:3000/api',
+//         url: isProduction ? process.env.PROD_URL : process.env.DEV_URL,
 //       },
 //     ],
 //   },
-//   apis: [path.join(__dirname, './openapi.yaml')],
+//   apis: [path.join(__dirname, '/src/routes/*.ts')],
 // };
 
-// const specs = swaggerJsDoc(options);
+// const swaggerSpec = swaggerJsDoc(options);
 
-// const swaggerSetup = (app: Express) => {
-//   app.use(
-//     '/api-docs',
-//     swaggerUi.serve,
-//     swaggerUi.setup(specs, {
-//       tryItOutEnabled: true,
-//     })
-//   );
-// };
-
-// export default swaggerSetup;
+// export default (app: Express) => {
+//     app.use('/api/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+//   };

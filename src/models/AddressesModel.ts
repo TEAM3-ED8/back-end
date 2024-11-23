@@ -18,6 +18,7 @@ export const getByIdAddress = async ({ id }: { id: number }) => {
     )
 
   return address
+
 }
 
 export const createAddress = async (address: Addresses) => {
@@ -35,6 +36,7 @@ export const updateAddress = async (
     data: address
   })
 }
+
 
 export const deleteAddress = async ({ id }: { id: number }) => {
   await getByIdAddress({ id })

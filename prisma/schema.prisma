@@ -14,10 +14,13 @@ datasource db {
 }
 
 model Elves {
-  id     Int    @id @default(autoincrement())
-  name   String
-  height String
-  age    Int
+  id        Int     @id @default(autoincrement())
+  name      String
+  age       String
+  address   String
+  height    String
+  mail      String
+  isDeleted Boolean @default(false)
 }
 
 model Addresses {
@@ -54,6 +57,7 @@ model Card {
   create_at   DateTime  @default(now())
   children    Childrens @relation(fields: [children_id], references: [id])
   children_id Int
+  isRead      Boolean   @default(false)
 }
 
 model Range {

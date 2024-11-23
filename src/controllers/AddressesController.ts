@@ -47,7 +47,10 @@ export const getByDate = catchedAsync(async (req, res) => {
 
   if (!search_date || search_date.trim().length === 0) {
     throw new ClientError("Invalid date", 400, "The date must be a string.")
-  }
+}
+
+
+ 
 
   const date = new Date(search_date)
 
