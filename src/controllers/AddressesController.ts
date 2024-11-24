@@ -1,8 +1,6 @@
 import type { Addresses } from "@prisma/client"
 import type { Request, Response } from "express"
-import { catchedAsync } from "../utilities/catchedAsync"
-import { dataResponse } from "../utilities/data-response"
-import { ClientError } from "../utilities/errors"
+import { ClientError,dataResponse,catchedAsync } from "../utilities"
 import {
   filterLatestSearches,
   getByIdAddress,
@@ -11,6 +9,7 @@ import {
   deleteAddress,
   filterBySearchDate
 } from "./../models/AddressesModel"
+
 import { prisma } from "../prisma"
 
 export const getAll = catchedAsync(async (req: Request, res: Response) => {

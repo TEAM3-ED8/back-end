@@ -1,7 +1,7 @@
 import { Childrens } from "@prisma/client"
 import { prisma } from "../prisma"
 
-export type createChildrenType = Omit<Childrens, "id" | "address ,card">
+export type createChildrenType = Omit<Childrens, "id"  | "cards">
 
 export const createChildren = async (data: createChildrenType) => {
   return await prisma.childrens.create({ data })
