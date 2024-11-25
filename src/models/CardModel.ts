@@ -1,9 +1,7 @@
-
 import { Card } from "@prisma/client"
 import { prisma } from "../prisma"
 
-
-export type createCardType = Omit<Card, "id" | "children"| "create_at">
+export type createCardType = Omit<Card, "id" | "children" | "create_at">
 export const createCard = async (data: createCardType) => {
   return await prisma.card.create({ data })
 }

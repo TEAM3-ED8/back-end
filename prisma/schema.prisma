@@ -29,15 +29,6 @@ model Addresses {
   lng           String
   display_name  String
   search_date   DateTime @default(now())
-  searches      Searches[]
-  childrens     Childrens[]
-}
-
-model Searches {
-  id          Int      @id @default(autoincrement())
-  searched_in DateTime @default(now())
-  address     Addresses @relation(fields: [address_id], references: [id])
-  address_id  Int
 }
 
 model Childrens {
@@ -45,19 +36,17 @@ model Childrens {
   name       String
   age        Int
   conduct    String
-  address    Addresses @relation(fields: [address_id], references: [id])
-  address_id Int
   gift       Boolean
-  card       Card[]
+  cards      Card[] 
 }
 
 model Card {
   id          Int       @id @default(autoincrement())
   content     String
   create_at   DateTime  @default(now())
-  children    Childrens @relation(fields: [children_id], references: [id])
   children_id Int
   isRead      Boolean   @default(false)
+  children    Childrens @relation(fields: [children_id], references: [id]) 
 }
 
 model Range {
