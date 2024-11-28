@@ -24,20 +24,20 @@ model Elves {
 }
 
 model Addresses {
-  id            Int         @id @default(autoincrement())
-  lat           String
-  lng           String
-  display_name  String
-  search_date   DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  lat          String
+  lng          String
+  display_name String
+  search_date  DateTime @default(now())
 }
 
 model Childrens {
-  id         Int      @id @default(autoincrement())
-  name       String
-  age        Int
-  conduct    String
-  gift       Boolean
-  cards      Card[] 
+  id            Int     @id @default(autoincrement())
+  name          String
+  behavior      String  @default("Kind")
+  levelBehavior String  @default("Good")
+  gift          Boolean
+  cards         Card[]
 }
 
 model Card {
@@ -46,7 +46,7 @@ model Card {
   create_at   DateTime  @default(now())
   children_id Int
   isRead      Boolean   @default(false)
-  children    Childrens @relation(fields: [children_id], references: [id]) 
+  children    Childrens @relation(fields: [children_id], references: [id])
 }
 
 model Range {
@@ -64,11 +64,11 @@ model Reindeer {
 }
 
 model Members {
-  id          Int @id @default(autoincrement())
-  name        String
-  image       String
-  role        String
-  message     String
-  github      String
-  linkedin    String
+  id       Int    @id @default(autoincrement())
+  name     String
+  image    String
+  role     String
+  message  String
+  github   String
+  linkedin String
 }
