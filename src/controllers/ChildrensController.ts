@@ -4,7 +4,9 @@ import {
   createChildrenType,
   deleteChildren,
   getAllChildrens,
-  updateChildrens
+  updateChildrens,
+  isValidBehavior,
+  isValidLevelBehavior
 } from "../models/ChildrensModel"
 
 export const getAll = async (req: Request, res: Response) => {
@@ -12,22 +14,38 @@ export const getAll = async (req: Request, res: Response) => {
     const childrens = await getAllChildrens()
     res.json(childrens)
   } catch (error) {
-    res.sendStatus(500)
+    console.log(error)
+    res.status(500).json({ error: "Internal Server Error" })
   }
 }
 
 export const create = async (req: Request, res: Response) => {
   try {
-    console.log(req.body)
-    const { name, age, gift, conduct }: createChildrenType = req.body
-    if (name === undefined || age === undefined || gift === undefined || conduct === undefined) {
-      res.status(404).json({ msg: "All fields are required" })
+    const { name, behavior, levelBehavior, gift }: createChildrenType = req.body
+    
+    if (!name || gift === undefined) {
+      res.status(404).json({ msg: "Name and gift are required" })
       return
     }
+
+    if (!isValidBehavior(behavior)) {
+      res.status(400).json({ 
+        msg: "Invalid behavior. Must be: Kind, Brave, Respectful, Curious or Helpful" 
+      })
+      return
+    }
+
+    if (!isValidLevelBehavior(levelBehavior)) {
+      res.status(400).json({ 
+        msg: "Invalid levelBehavior. Must be: Good, Regular or Bad" 
+      })
+      return
+    }
+
     const childrenCreate = await createChildren({
       name,
-      age,
-      conduct,
+      behavior,
+      levelBehavior,
       gift
     })
     res.json(childrenCreate)
@@ -44,17 +62,34 @@ export const update = async (req: Request, res: Response) => {
       res.status(404).json({ msg: "Invalid ID" })
       return
     }
-    const { name, age, gift, conduct }: createChildrenType = req.body
-    if (!name || !age || !gift || !conduct ) {
-      res.status(404).json({ msg: "All fields are required" })
+    
+    const { name, behavior, levelBehavior, gift }: createChildrenType = req.body
+    
+    if (!name || gift === undefined) {
+      res.status(404).json({ msg: "Name and gift are required" })
       return
     }
+
+    if (!isValidBehavior(behavior)) {
+      res.status(400).json({ 
+        msg: "Invalid behavior. Must be: Kind, Brave, Respectful, Curious or Helpful" 
+      })
+      return
+    }
+
+    if (!isValidLevelBehavior(levelBehavior)) {
+      res.status(400).json({ 
+        msg: "Invalid levelBehavior. Must be: Good, Regular or Bad" 
+      })
+      return
+    }
+
     const childrenUpdate = await updateChildrens({
       id,
       data: {
         name,
-        age,
-        conduct,
+        behavior,
+        levelBehavior,
         gift
       }
     })
@@ -62,19 +97,5 @@ export const update = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error)
     res.status(500).json({ error: "Internal Server Error" })
-  }
-}
-
-export const remove = async (req: Request, res: Response) => {
-  try {
-    const id = parseInt(req.params.id)
-    if (isNaN(id)) {
-      res.status(404).json({ msg: "Invalid ID" })
-      return
-    }
-    const children = await deleteChildren({ id, currentValue: false })
-    res.json(children)
-  } catch (error) {
-    res.sendStatus(500)
   }
 }

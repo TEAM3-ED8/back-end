@@ -5,7 +5,6 @@ import {
   getById,
   remove,
   update,
-  generateReindeerLineup
 } from "../controllers/ReindeerController"
 
 export const createReindeerRouter = () => {
@@ -16,6 +15,5 @@ export const createReindeerRouter = () => {
   rounter.get("/:id", getById)
   rounter.put("/:id", update)
   rounter.delete("/:id", remove)
-  rounter.post("/mission", generateReindeerLineup)
   return rounter
 }
