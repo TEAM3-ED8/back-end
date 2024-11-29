@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { create, getAll, getById, remove } from "../controllers/CardsController"
+import { create, getAll, getById, update } from "../controllers/CardsController"
 
 export const createCardsRouter = () => {
   const router = Router()
@@ -7,6 +7,6 @@ export const createCardsRouter = () => {
   router.post("/", create)
   router.get("/", getAll)
   router.get("/:id", getById)
-  router.delete("/:id", remove)
+  router.put("/:id", update)
   return router
 }
