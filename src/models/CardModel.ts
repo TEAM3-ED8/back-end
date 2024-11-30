@@ -1,29 +1,40 @@
-
 import { Card } from "@prisma/client"
 import { prisma } from "../prisma"
+import { ClientError } from "../utilities"
 
-
-export type createCardType = Omit<Card, "id" | "children"| "create_at">
-export const createCard = async (data: createCardType) => {
+export const createCard = async (data: Card) => {
   return await prisma.card.create({ data })
 }
+
 export const getByIdCard = async ({ id }: { id: number }) => {
-  return await prisma.card.findUnique({ where: { id } })
+  const card = await prisma.card.findUnique({ where: { id } })
+
+  if (!card)
+    throw new ClientError(
+      "Card not found",
+      404,
+      "No Card found with the given ID"
+    )
+
+  return card
 }
+
 export const getAllCards = async () => {
-  return await prisma.card.findMany()
+  return await prisma.card.findMany({
+    include: {
+      children: true
+    },
+    orderBy: {
+      isRead: "asc"
+    }
+  })
 }
-export const deleteCard = async ({
-  id,
-  currentValue
-}: {
-  id: number
-  currentValue: boolean
-}) => {
+
+export const updateCard = async (id: Card["id"], card: Card) => {
+  const foundCard = await getByIdCard({ id })
+
   return await prisma.card.update({
     where: { id },
-    data: {
-      isRead: !currentValue
-    }
+    data: card
   })
 }

@@ -1,73 +1,60 @@
+import type { Card } from "@prisma/client"
 import { Request, Response } from "express"
-import {
-  createCard,
-  createCardType,
-  deleteCard,
-  getAllCards,
-  getByIdCard
-} from "../models/CardModel"
+import { createCard, getAllCards, getByIdCard } from "../models/CardModel"
+import { catchedAsync, ClientError, dataResponse } from "../utilities"
+import { updateCard } from "./../models/CardModel"
 
-export const getAll = async (req: Request, res: Response) => {
-  try {
-    const cards = await getAllCards()
-    res.json(cards)
-  } catch (error) {
-    res.sendStatus(500)
+export const getAll = catchedAsync(async (req: Request, res: Response) => {
+  const allCards: Card[] = await getAllCards()
+
+  dataResponse(res, 200, allCards, "Cards obtained successfully")
+})
+
+export const getById = catchedAsync(async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id)
+
+  if (id && isNaN(Number(id))) {
+    throw new ClientError("Invalid ID", 400, "The ID must be a Number")
   }
-}
-export const getById = async (req: Request, res: Response) => {
-  try {
-    const id = parseInt(req.params.id)
-    if (isNaN(id)) {
-      res.status(404).json({ msg: "Invalid ID" })
-      return
-    }
-    const card = await getByIdCard({ id: Number(id) })
-    if (!card) {
-      res.status(404).json({ msg: "Card not found" })
-      return
-    }
-    res.json(card)
-  } catch (error) {
-    res.sendStatus(500)
+
+  const card: Card = await getByIdCard({ id: Number(id) })
+
+  dataResponse(res, 200, card, "Card successfully obtained.")
+})
+
+export const create = catchedAsync(async (req: Request, res: Response) => {
+  const card: Card = req.body
+
+  if (!card.content || !card.children_id) {
+    throw new ClientError(
+      "All fields are required",
+      400,
+      "Missing required fields"
+    )
   }
-}
 
-export const create = async (req: Request, res: Response) => {
-  try {
-    const { content, children_id, isRead }: createCardType = req.body
-    if (!content  || !children_id) {
-      res.status(404).json({ msg: "All fields are required" })
-      return
-    }
-    const cardCreate = await createCard({
-      content,
-      children_id,
-      isRead
-    })
-    res.json(cardCreate)
-  } catch (error) {
-    console.log(error)
-    res.sendStatus(500).json({ error: "Internal Server Error" })
+  const createdCard: Card = await createCard(card)
+
+  dataResponse(res, 201, createdCard, "Card created successfully")
+})
+
+export const update = catchedAsync(async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  if (id && isNaN(Number(id)))
+    throw new ClientError("Invalid ID", 400, "ID must be a Number")
+
+  const card: Card = req.body
+
+  if (!card.content || !card.children_id) {
+    throw new ClientError(
+      "All fields are required",
+      400,
+      "Missing required fields"
+    )
   }
-}
 
-export const remove = async (req: Request, res: Response) => {
-   try {
-      const id = parseInt(req.params.id)
-      if (isNaN(id)) {
-         res.status(404).json({ msg: "Invalid ID" })
-         return
-      }
-      const card = await getByIdCard({ id: Number(id) })
-      if (!card) {
-         res.status(404).json({ msg: "Card not found" })
-         return
-      }
-      await deleteCard({ id: Number(id), currentValue: card.isRead })
-      res.json({ msg: "Card deleted" })
-   } catch (error) {
-      res.sendStatus(500)
-   }
+  const updatedCard: Card = await updateCard(Number(id), card)
 
-}
+  dataResponse(res, 200, updatedCard, "Address updated successfully")
+})

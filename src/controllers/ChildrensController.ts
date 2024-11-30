@@ -4,7 +4,9 @@ import {
   createChildrenType,
   deleteChildren,
   getAllChildrens,
-  updateChildrens
+  updateChildrens,
+  isValidBehavior,
+  isValidLevelBehavior
 } from "../models/ChildrensModel"
 
 export const getAll = async (req: Request, res: Response) => {
@@ -12,72 +14,88 @@ export const getAll = async (req: Request, res: Response) => {
     const childrens = await getAllChildrens()
     res.json(childrens)
   } catch (error) {
-    res.sendStatus(500)
+    console.log(error)
+    res.status(500).json({ error: "Internal Server Error" })
   }
 }
 
 export const create = async (req: Request, res: Response) => {
   try {
-    const { name, age, gift, conduct, address_id }: createChildrenType =
-      req.body
-    if (!name || !age || !gift || !conduct || !address_id) {
-      res.status(404).json({ msg: "All fields are required" })
+    const { name, behavior, levelBehavior, gift }: createChildrenType = req.body
+    
+    if (!name || gift === undefined) {
+      res.status(404).json({ msg: "Name and gift are required" })
       return
     }
+
+    if (!isValidBehavior(behavior)) {
+      res.status(400).json({ 
+        msg: "Invalid behavior. Must be: Kind, Brave, Respectful, Curious or Helpful" 
+      })
+      return
+    }
+
+    if (!isValidLevelBehavior(levelBehavior)) {
+      res.status(400).json({ 
+        msg: "Invalid levelBehavior. Must be: Good, Regular or Bad" 
+      })
+      return
+    }
+
     const childrenCreate = await createChildren({
       name,
-      age,
-      conduct,
-      address_id,
+      behavior,
+      levelBehavior,
       gift
     })
     res.json(childrenCreate)
   } catch (error) {
     console.log(error)
-    res.sendStatus(500).json({ error: "Internal Server Error" })
+    res.status(500).json({ error: "Internal Server Error" })
   }
 }
 
 export const update = async (req: Request, res: Response) => {
-    try {
-        const id = parseInt(req.params.id)
-        if (isNaN(id)) {
-        res.status(404).json({ msg: "Invalid ID" })
-        return
-        }
-        const { name, age, gift, conduct, address_id }: createChildrenType = req.body
-        if (!name || !age || !gift || !conduct || !address_id) {
-        res.status(404).json({ msg: "All fields are required" })
-        return
-        }
-        const childrenUpdate = await updateChildrens({
-        id,
-        data: {
-            name,
-            age,
-            conduct,
-            address_id,
-            gift
-        }
-        })
-        res.json(childrenUpdate)
-    } catch (error) {
-        console.log(error)
-        res.sendStatus(500).json({ error: "Internal Server Error" })
+  try {
+    const id = parseInt(req.params.id)
+    if (isNaN(id)) {
+      res.status(404).json({ msg: "Invalid ID" })
+      return
     }
+    
+    const { name, behavior, levelBehavior, gift }: createChildrenType = req.body
+    
+    if (!name || gift === undefined) {
+      res.status(404).json({ msg: "Name and gift are required" })
+      return
     }
 
+    if (!isValidBehavior(behavior)) {
+      res.status(400).json({ 
+        msg: "Invalid behavior. Must be: Kind, Brave, Respectful, Curious or Helpful" 
+      })
+      return
+    }
 
-export const remove = async (req: Request, res: Response) => {
-    try {
-        const id = parseInt(req.params.id)
-        if (isNaN(id)) {
-        res.status(404).json({ msg: "Invalid ID" })
-        return
-        }
-        const children = await deleteChildren({ id, currentValue: false })
-        res.json(children)
-    } catch (error) {
-        res.sendStatus(500)
+    if (!isValidLevelBehavior(levelBehavior)) {
+      res.status(400).json({ 
+        msg: "Invalid levelBehavior. Must be: Good, Regular or Bad" 
+      })
+      return
     }
-    }
+
+    const childrenUpdate = await updateChildrens({
+      id,
+      data: {
+        name,
+        behavior,
+        levelBehavior,
+        gift
+      }
+    })
+    res.json(childrenUpdate)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: "Internal Server Error" })
+  }
+}

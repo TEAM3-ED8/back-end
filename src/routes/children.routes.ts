@@ -2,7 +2,7 @@ import { Router } from "express"
 import {
   create,
   getAll,
-  remove,
+  // remove,
   update
 } from "../controllers/ChildrensController"
 
@@ -11,7 +11,7 @@ export const createChildrensRouter = () => {
 
   router.post("/", create)
   router.get("/", getAll)
-  router.delete("/:id", remove)
+  // router.delete("/:id", remove)
   router.put("/:id", update)
   return router
 }

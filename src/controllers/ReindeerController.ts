@@ -5,10 +5,8 @@ import {
   getAllReindeer,
   getByIdReineer,
   updateReindeer,
-  getIncludesID
 } from "../models/ReindeerModel"
-import { chatWithAi } from "../utilities/ai"
-import { generateReindeerLineupPrompt } from "../prompts"
+
 
 export const create = async (req: Request, res: Response) => {
   try {
@@ -50,24 +48,4 @@ export const remove = async (req: Request, res: Response) => {
   }
 }
 
-export const generateReindeerLineup = async (req: Request, res: Response) => {
-  try {
-    const { mission }: { mission: string } = req.body
-    if (!mission) {
-      res.status(400).json({ msg: "Fields are required" })
-      return
-    }
-    const reindeers = await getAllReindeer()
-    const prompt = generateReindeerLineupPrompt({ mission, reindeers })
-    const aiResponse = await chatWithAi({ prompt })
-    try {
-      const ids = JSON.parse(aiResponse)
-      const reindeersMission = await getIncludesID({ ids })
-      res.status(200).json(reindeersMission)
-    } catch {
-      res.status(200).json([])
-    }
-  } catch {
-    res.sendStatus(500)
-  }
-}
+
