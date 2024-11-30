@@ -38,3 +38,10 @@ export const updateCard = async (id: Card["id"], card: Card) => {
     data: card
   })
 }
+
+export const updateCardStatus = async (id: Card["id"], isRead: boolean): Promise<Card> => {
+  return await prisma.card.update({
+    where: { id },
+    data: { isRead }
+  })
+}
