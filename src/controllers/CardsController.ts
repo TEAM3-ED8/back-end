@@ -1,6 +1,6 @@
 import type { Card } from "@prisma/client"
 import { Request, Response } from "express"
-import { createCard, getAllCards, getByIdCard } from "../models/CardModel"
+import { createCard, getAllCards, getByIdCard, updateCardStatus } from "../models/CardModel"
 import { catchedAsync, ClientError, dataResponse } from "../utilities"
 import { updateCard } from "./../models/CardModel"
 
@@ -57,4 +57,24 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
   const updatedCard: Card = await updateCard(Number(id), card)
 
   dataResponse(res, 200, updatedCard, "Address updated successfully")
+})
+
+export const updateStatus = catchedAsync(async (req: Request, res: Response) => {
+  const { id } = req.params
+  const { isRead } = req.body
+
+  if (id && isNaN(Number(id)))
+    throw new ClientError("Invalid ID", 400, "ID must be a Number")
+
+  if (typeof isRead !== 'boolean') {
+    throw new ClientError(
+      "Invalid isRead value",
+      400,
+      "isRead must be a boolean"
+    )
+  }
+
+  const updatedCard: Card = await updateCardStatus(Number(id), isRead)
+
+  dataResponse(res, 200, updatedCard, "Card status updated successfully")
 })
