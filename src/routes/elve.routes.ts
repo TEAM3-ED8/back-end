@@ -14,6 +14,7 @@ export const createElveRouter = () => {
   router.get("/:id", getById)
   router.put("/:id", update)
   router.get("/delete/:id", remove)
+  router.delete("/:id", remove)
 
   return router
 }

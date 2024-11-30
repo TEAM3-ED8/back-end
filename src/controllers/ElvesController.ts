@@ -8,85 +8,112 @@ import {
   createElveType,
   updateElveType
 } from "../models/ElvesModel"
+import { catchedAsync, ClientError, dataResponse } from "../utilities"
+import type { Elves } from "@prisma/client"
+import type { Pagination } from "../interfaces"
 
-export const getAll = async (req: Request, res: Response) => {
-  try {
-    const elves = await getAllElves()
-    res.json(elves)
-  } catch (error) {
-    res.sendStatus(500)
-  }
-}
+export const getAll = catchedAsync(async (req: Request, res: Response) => {
+  const { page, limit } = req.query
 
-export const getById = async (req: Request, res: Response) => {
-  try {
-    const id = parseInt(req.params.id)
-    if (isNaN(id)) {
-      res.status(404).json({ msg: "Invalid ID" })
-      return
-    }
-    const elve = await getByIdElve({ id: Number(id) })
-    if (!elve) {
-      res.status(404).json({ msg: "Elve not found" })
-      return
-    }
-    res.json(elve)
-  } catch (error) {
-    res.sendStatus(500)
+  if ((limit && isNaN(Number(limit))) || (page && isNaN(Number(page)))) {
+    throw new ClientError("Invalid limit", 400, "Limit must be a Number.")
   }
-}
 
-export const create = async (req: Request, res: Response) => {
-  try {
-    const { name, age, address, height, mail }: createElveType = req.body
-    if (!name || !age || !address || !height || !mail) {
-      res.status(404).json({ msg: "All fields are required" })
-      return
-    }
-    const elveCreate = await createElve({ name, age, address, height, mail })
-    res.json(elveCreate)
-  } catch (error) {
-    console.log(error)
-    res.sendStatus(500)
-  }
-}
+  let response
 
-export const update = async (req: Request, res: Response) => {
-  try {
-    const id = parseInt(req.params.id)
-    if (isNaN(id)) {
-      res.status(404).json({ msg: "Invalid ID" })
-      return
-    }
-    const elve = await getByIdElve({ id })
-    if (!elve) {
-      res.status(404).json({ msg: "Elve not found" })
-      return
-    }
-    const data: updateElveType = req.body
-    elve.id = id
-    const elveUpdate = await updateElve(data)
-    res.json(elveUpdate)
-  } catch (error) {
-    res.status(500).json({ error: "Error updating elve" })
+  if (page && limit) {
+    response = await getAllElves({
+      page: Number(page),
+      limit: Number(limit)
+    })
+  } else {
+    response = await getAllElves({
+      page: 1,
+      limit: 10
+    })
   }
-}
 
-export const remove = async (req: Request, res: Response) => {
-  try {
-    const id = parseInt(req.params.id)
-    if (isNaN(id)) {
-      res.status(404).json({ msg: "Invalid ID" })
-      return
-    }
-    const elve = await getByIdElve({ id })
-    if (!elve) {
-      res.status(404).json({ msg: "Elve not found" })
-      return
-    }
-    await deleteElve({ id, currentValue: elve.isDeleted })
-    res.sendStatus(200)
-  } catch (error) {
-    res.sendStatus(500)
+  const { data, count, current_page, pages } = response
+
+  const pagination: Pagination = {
+    count,
+    current_page,
+    pages
   }
-}
+
+  dataResponse(res, 200, data, "Successfully obtained elves.", pagination)
+})
+
+export const getById = catchedAsync(async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  if (id && isNaN(Number(id))) {
+    throw new ClientError("Invalid ID", 400, "The ID must be a Number.")
+  }
+
+  const elve: Elves = await getByIdElve({ id: Number(id) })
+
+  dataResponse(res, 200, elve, "Elf successfully obtained.")
+})
+
+export const create = catchedAsync(async (req: Request, res: Response) => {
+  const elve: Elves = req.body
+
+  const { name, age, address, height, email } = elve
+
+  if (!name || !age || !address || !height || !email)
+    throw new ClientError(
+      "All fields are required",
+      400,
+      "Missing required fields"
+    )
+
+  const createdElfo: Elves = await createElve(elve)
+  dataResponse(res, 201, createdElfo, "Elfo created successfully.")
+})
+
+export const update = catchedAsync(async (req: Request, res: Response) => {
+  const { id } = req.params
+  if (id && isNaN(Number(id))) {
+    throw new ClientError("Invalid ID", 400, "ID must be a Number")
+  }
+
+  const elve: Elves = req.body
+
+  const { name, age, address, height, email } = elve
+
+  if (!name || !age || !address || !height || !email)
+    throw new ClientError(
+      "All fields are required",
+      400,
+      "Missing required fields"
+    )
+
+  const updatedElfo: Elves = await updateElve(Number(id), elve)
+
+  dataResponse(res, 200, updatedElfo, "Elfo updated successfully")
+})
+
+export const remove = catchedAsync(async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  if (id && isNaN(Number(id))) {
+    throw new ClientError("Invalid ID", 400, "ID must be a Number")
+  }
+
+  const elfFound: Elves = await getByIdElve({ id: Number(id) })
+
+  if (!elfFound)
+    throw new ClientError(
+      "Elf not found",
+      404,
+      "An elf with the provided ID was not found."
+    )
+
+  const elfRemoved: Elves = await deleteElve({
+    id,
+    currentValue: elfFound.isDeleted
+  })
+
+  dataResponse(res, 200, elfRemoved, "Elf deleted successfully")
+})
