@@ -21,8 +21,14 @@ export const getByIdAddress = async ({ id }: { id: number }) => {
 
 }
 
-export const createAddress = async (address: Addresses) => {
-  return await prisma.addresses.create({ data: address })
+export const createAddress = async (address: Omit<Addresses, 'id' | 'search_date'>) => {
+  return await prisma.addresses.create({
+    data: {
+      ...address,
+      lat: address.lat.toString(),
+      lng: address.lng.toString(),
+    }
+  })
 }
 
 export const updateAddress = async (

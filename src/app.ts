@@ -14,9 +14,10 @@ app.get("/", (req, res) => {
 registerRoutes(app)
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  const { statusCode, message, description } = err
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  const description = err.description || "An unexpected error occurred";
 
-  errorResponse(res, statusCode, message, description)
-  //console.error(err.stack)
-  // res.status(500).json({ error: "Internal Server Error" })
-})
+  console.error(err);
+  errorResponse(res, statusCode, message, description);
+});
