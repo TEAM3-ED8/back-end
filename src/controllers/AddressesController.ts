@@ -66,9 +66,9 @@ export const getByDate = catchedAsync(async (req, res) => {
 })
 
 export const create = catchedAsync(async (req: Request, res: Response) => {
-  const address: Addresses = req.body
+  const { lat, lng, display_name } = req.body
 
-  if (!address.lat || !address.lng || !address.display_name) {
+  if (!lat || !lng || !display_name) {
     throw new ClientError(
       "All fields are required",
       400,
@@ -76,8 +76,23 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
     )
   }
 
-  const createdAddress: Addresses = await createAddress(address)
-  dataResponse(res, 201, createdAddress, "Address created successfully")
+  if (typeof lat !== 'number' || typeof lng !== 'number') {
+    throw new ClientError(
+      "Invalid coordinates",
+      400,
+      "Latitude and longitude must be numbers"
+    )
+  }
+
+  try {
+    const createdAddress: Addresses = await createAddress({ lat, lng, display_name })
+    dataResponse(res, 201, createdAddress, "Address created successfully")
+  } catch (error) {
+    if (error instanceof ClientError) {
+      throw error;
+    }
+    throw new ServerError("Failed to create address", "An unexpected error occurred while creating the address");
+  }
 })
 
 export const update = catchedAsync(async (req: Request, res: Response) => {
