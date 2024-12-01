@@ -88,3 +88,30 @@ export const deleteElve = async ({
     )
   }
 }
+
+export const updateElveStatus = async (id: Elves["id"], isDeleted: boolean): Promise<Elves> => {
+  const elfFound = await getByIdElve({ id })
+
+  if (!elfFound) {
+    throw new ClientError(
+      "Elve not found",
+      404,
+      "No elve found with the provided ID."
+    )
+  }
+
+  try {
+    return await prisma.elves.update({
+      where: { id },
+      data: { isDeleted }
+    })
+  } catch (error) {
+    throw new ServerError(
+      "Failed to update elve status",
+      500,
+      "An error occurred during the status update process."
+    )
+  }
+}
+
+

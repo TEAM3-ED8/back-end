@@ -5,6 +5,7 @@ import {
   getAllElves,
   getByIdElve,
   updateElve,
+  updateElveStatus,
   createElveType,
   updateElveType
 } from "../models/ElvesModel"
@@ -116,4 +117,24 @@ export const remove = catchedAsync(async (req: Request, res: Response) => {
   })
 
   dataResponse(res, 200, elfRemoved, "Elf deleted successfully")
+})
+
+export const updateStatus = catchedAsync(async (req: Request, res: Response) => {
+  const { id } = req.params
+  const { isDeleted } = req.body
+
+  if (id && isNaN(Number(id)))
+    throw new ClientError("Invalid ID", 400, "ID must be a Number")
+
+  if (typeof isDeleted !== 'boolean') {
+    throw new ClientError(
+      "Invalid isDeleted value",
+      400,
+      "isDeleted must be a boolean"
+    )
+  }
+
+  const updatedElve: Elves = await updateElveStatus(Number(id), isDeleted)
+
+  dataResponse(res, 200, updatedElve, "Elf status updated successfully")
 })

@@ -4,7 +4,8 @@ import {
   create,
   getById,
   remove,
-  update
+  update,
+  updateStatus,
 } from "../controllers/ElvesController"
 
 export const createElveRouter = () => {
@@ -13,8 +14,9 @@ export const createElveRouter = () => {
   router.post("/", create)
   router.get("/:id", getById)
   router.put("/:id", update)
-  router.get("/delete/:id", remove)
+  router.patch("/:id", updateStatus)
   router.delete("/:id", remove)
 
   return router
 }
+
