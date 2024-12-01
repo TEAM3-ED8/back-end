@@ -1,4 +1,4 @@
-import { Elves } from "@prisma/client"
+import { Elves, type Prisma } from "@prisma/client"
 import { prisma } from "../prisma"
 import { ClientError, ServerError } from "../utilities"
 export type createElveType = Omit<Elves, "id" | "isDeleted">
@@ -23,11 +23,29 @@ export const getByIdElve = async ({ id }: { id: number }) => {
 
 export const getAllElves = async ({
   page = 1,
-  limit = 10
+  limit = 10,
+  sortBy = "id",
+  sortOrder = "asc",
+  filter = {}
 }: {
   page: number
   limit: number
+  sortBy?: keyof Elves
+  sortOrder?: "asc" | "desc"
+  filter?: Partial<Record<keyof Elves, string>>
 }) => {
+  const where: Prisma.ElvesWhereInput = {}
+
+  // Apply filters
+  Object.entries(filter).forEach(([key, value]) => {
+    if (value && value.trim() !== "") {
+      where[key as keyof Elves] = {
+        contains: value.trim(),
+        mode: "insensitive"
+      }
+    }
+  })
+
   const totalItems = await prisma.elves.count()
   const totalPages = totalItems > 0 ? Math.ceil(totalItems / limit) : 1
 
@@ -35,8 +53,10 @@ export const getAllElves = async ({
   if (page > totalPages) page = totalPages
 
   const response = await prisma.elves.findMany({
+    where,
     skip: (page - 1) * limit,
-    take: limit
+    take: limit,
+    orderBy: { [sortBy]: sortOrder }
   })
 
   return {
@@ -89,7 +109,10 @@ export const deleteElve = async ({
   }
 }
 
-export const updateElveStatus = async (id: Elves["id"], isDeleted: boolean): Promise<Elves> => {
+export const updateElveStatus = async (
+  id: Elves["id"],
+  isDeleted: boolean
+): Promise<Elves> => {
   const elfFound = await getByIdElve({ id })
 
   if (!elfFound) {
@@ -113,5 +136,3 @@ export const updateElveStatus = async (id: Elves["id"], isDeleted: boolean): Pro
     )
   }
 }
-
-
