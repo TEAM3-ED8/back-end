@@ -14,10 +14,19 @@ import type { Elves } from "@prisma/client"
 import type { Pagination } from "../interfaces"
 
 export const getAll = catchedAsync(async (req: Request, res: Response) => {
-  const { page, limit, sortBy, sortOrder, ...filter } = req.query
+  const { page, limit, sortBy, sortOrder, name } = req.query
 
   if ((limit && isNaN(Number(limit))) || (page && isNaN(Number(page)))) {
-    throw new ClientError("Invalid limit", 400, "Limit must be a Number.")
+    throw new ClientError(
+      "Invalid limit or page",
+      400,
+      "Limit and page must be Numbers."
+    )
+  }
+
+  const filter: Partial<Record<keyof Elves, string>> = {}
+  if (typeof name === "string" && name.trim() !== "") {
+    filter.name = name.trim()
   }
 
   const response = await getAllElves({
@@ -25,7 +34,7 @@ export const getAll = catchedAsync(async (req: Request, res: Response) => {
     limit: Number(limit) || 10,
     sortBy: sortBy as keyof Elves,
     sortOrder: sortOrder as "asc" | "desc",
-    filter: filter as Partial<Record<keyof Elves, string>>
+    filter
   })
 
   const { data, count, current_page, pages } = response

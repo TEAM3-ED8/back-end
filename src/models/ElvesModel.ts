@@ -36,34 +36,30 @@ export const getAllElves = async ({
 }) => {
   const where: Prisma.ElvesWhereInput = {}
 
-  // Apply filters
-  Object.entries(filter).forEach(([key, value]) => {
-    if (value && value.trim() !== "") {
-      where[key as keyof Elves] = {
-        contains: value.trim(),
-        mode: "insensitive"
-      }
+  if (filter.name) {
+    where.name = {
+      contains: filter.name,
+      mode: "insensitive"
     }
-  })
+  }
 
-  const totalItems = await prisma.elves.count()
-  const totalPages = totalItems > 0 ? Math.ceil(totalItems / limit) : 1
+  const totalItems = await prisma.elves.count({ where })
+  const totalPages = Math.max(1, Math.ceil(totalItems / limit))
 
-  if (page <= 0) page = 1
-  if (page > totalPages) page = totalPages
+  const safePageNumber = Math.max(1, Math.min(page, totalPages))
 
   const response = await prisma.elves.findMany({
     where,
-    skip: (page - 1) * limit,
+    skip: (safePageNumber - 1) * limit,
     take: limit,
     orderBy: { [sortBy]: sortOrder }
   })
 
   return {
     data: response,
-    count: totalItems || 0,
-    current_page: page || 1,
-    pages: totalPages || 1
+    count: totalItems,
+    current_page: safePageNumber,
+    pages: totalPages
   }
 }
 
