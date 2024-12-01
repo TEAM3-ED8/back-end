@@ -1,4 +1,4 @@
-import { Elves } from "@prisma/client"
+import { Elves, Prisma } from "@prisma/client"
 import { prisma } from "../prisma"
 import { ClientError, ServerError } from "../utilities"
 export type createElveType = Omit<Elves, "id" | "isDeleted">
@@ -23,29 +23,45 @@ export const getByIdElve = async ({ id }: { id: number }) => {
 
 export const getAllElves = async ({
   page = 1,
-  limit = 10
+  limit = 10,
+  sortBy = 'id',
+  sortOrder = 'asc',
+  filter = {}
 }: {
   page: number
   limit: number
+  sortBy?: keyof Elves
+  sortOrder?: 'asc' | 'desc'
+  filter?: Partial<Record<keyof Elves, string>>
 }) => {
-  const totalItems = await prisma.elves.count()
-  const totalPages = totalItems > 0 ? Math.ceil(totalItems / limit) : 1
+  const where: Prisma.ElvesWhereInput = {};
 
-  if (page <= 0) page = 1
-  if (page > totalPages) page = totalPages
+  if (filter.name) {
+    where.name = {
+      contains: filter.name,
+      mode: 'insensitive'
+    };
+  }
+
+  const totalItems = await prisma.elves.count({ where });
+  const totalPages = Math.max(1, Math.ceil(totalItems / limit));
+
+  const safePageNumber = Math.max(1, Math.min(page, totalPages));
 
   const response = await prisma.elves.findMany({
-    skip: (page - 1) * limit,
-    take: limit
-  })
+    where,
+    skip: (safePageNumber - 1) * limit,
+    take: limit,
+    orderBy: { [sortBy]: sortOrder }
+  });
 
   return {
     data: response,
-    count: totalItems || 0,
-    current_page: page || 1,
-    pages: totalPages || 1
-  }
-}
+    count: totalItems,
+    current_page: safePageNumber,
+    pages: totalPages
+  };
+};
 
 export const updateElve = async (id: Elves["id"], elve: Elves) => {
   await getByIdElve({ id })

@@ -14,36 +14,35 @@ import type { Elves } from "@prisma/client"
 import type { Pagination } from "../interfaces"
 
 export const getAll = catchedAsync(async (req: Request, res: Response) => {
-  const { page, limit } = req.query
+  const { page, limit, sortBy, sortOrder, name } = req.query;
 
   if ((limit && isNaN(Number(limit))) || (page && isNaN(Number(page)))) {
-    throw new ClientError("Invalid limit", 400, "Limit must be a Number.")
+    throw new ClientError("Invalid limit or page", 400, "Limit and page must be Numbers.");
   }
 
-  let response
-
-  if (page && limit) {
-    response = await getAllElves({
-      page: Number(page),
-      limit: Number(limit)
-    })
-  } else {
-    response = await getAllElves({
-      page: 1,
-      limit: 10
-    })
+  const filter: Partial<Record<keyof Elves, string>> = {};
+  if (typeof name === 'string' && name.trim() !== '') {
+    filter.name = name.trim();
   }
 
-  const { data, count, current_page, pages } = response
+  const response = await getAllElves({
+    page: Number(page) || 1,
+    limit: Number(limit) || 10,
+    sortBy: sortBy as keyof Elves,
+    sortOrder: sortOrder as 'asc' | 'desc',
+    filter
+  });
+
+  const { data, count, current_page, pages } = response;
 
   const pagination: Pagination = {
     count,
     current_page,
     pages
-  }
+  };
 
-  dataResponse(res, 200, data, "Successfully obtained elves.", pagination)
-})
+  dataResponse(res, 200, data, "Successfully obtained elves.", pagination);
+});
 
 export const getById = catchedAsync(async (req: Request, res: Response) => {
   const { id } = req.params
