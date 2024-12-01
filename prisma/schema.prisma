@@ -19,7 +19,7 @@ model Elves {
   age       String
   address   String
   height    String
-  mail      String
+  email     String
   isDeleted Boolean @default(false)
 }
 
