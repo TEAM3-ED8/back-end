@@ -4,48 +4,77 @@ import {
   deleteReindeer,
   getAllReindeer,
   getByIdReineer,
-  updateReindeer,
+  updateReindeer
 } from "../models/ReindeerModel"
+import type { Reindeers } from "@prisma/client"
+import { catchedAsync, ClientError, dataResponse } from "../utilities"
 
+export const create = catchedAsync(async (req: Request, res: Response) => {
+  const reindeer: Reindeers = req.body
 
-export const create = async (req: Request, res: Response) => {
-  try {
-    const reindeer = await createReindeer(req.body)
-    res.status(201).json(reindeer)
-  } catch (error) {
-    res.status(500).json({ error: "Error creating reindeer" })
-  }
-}
-export const getAll = async (req: Request, res: Response) => {
-  try {
-    const reindeer = await getAllReindeer()
-    res.status(200).json(reindeer)
-  } catch (error) {
-    res.status(500).json({ error: "Error fetchin reindeers" })
-  }
-}
-export const getById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    const reindeer = await getByIdReineer({ id: Number(id) })
-  } catch (error) {
-    res.status(404).json({ error: "Reindeer not found" })
-  }
-}
-export const update = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    const reindeerUpdate = await updateReindeer({ ...req.body, id: Number(id) })
-  } catch (error) {}
-}
-export const remove = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params
-    await deleteReindeer({ id: Number(id) })
-    res.status(204).send()
-  } catch (error) {
-    res.status(500).json({ error: "Error deleting reindeer" })
-  }
-}
+  const { name, type, skills } = reindeer
 
+  if (!name || !type || !skills)
+    throw new ClientError(
+      "All fields are required",
+      400,
+      "Missing required fields"
+    )
 
+  const createdReindeer: Reindeers = await createReindeer(reindeer)
+
+  dataResponse(res, 201, createdReindeer, "Reindeer created successfully")
+})
+
+export const getAll = catchedAsync(async (req: Request, res: Response) => {
+  const allReindeers: Reindeers[] = await getAllReindeer()
+
+  dataResponse(res, 200, allReindeers, "Reindeers obtained successfully")
+})
+
+export const getById = catchedAsync(async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  if (id && isNaN(Number(id))) {
+    throw new ClientError("Invalid ID", 400, "The ID must be a Number.")
+  }
+
+  const reindeer: Reindeers = await getByIdReineer({ id: Number(id) })
+
+  dataResponse(res, 200, reindeer, "Reindeer successfully obtained")
+})
+
+export const update = catchedAsync(async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  if (id && isNaN(Number(id))) {
+    throw new ClientError("Invalid ID", 400, "The ID must be a Number.")
+  }
+
+  const reindeer: Reindeers = req.body
+
+  const { name, type, skills } = reindeer
+
+  if (!name || !type || !skills)
+    throw new ClientError(
+      "All fields are required",
+      400,
+      "Missing required fields"
+    )
+
+  const updatedReindeer: Reindeers = await updateReindeer(Number(id), reindeer)
+
+  dataResponse(res, 200, updatedReindeer, "Reindeer updated successfully")
+})
+
+export const remove = catchedAsync(async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  if (id && isNaN(Number(id))) {
+    throw new ClientError("Invalid ID", 400, "The ID must be a Number.")
+  }
+
+  const deletedReindeer: Reindeers = await deleteReindeer({ id: Number(id) })
+
+  dataResponse(res, 200, deletedReindeer, "Reindeer deleted successfully")
+})

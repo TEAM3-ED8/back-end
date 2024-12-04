@@ -52,16 +52,35 @@ model Card {
 model Range {
   id       Int        @id @default(autoincrement())
   range    String
-  reindeer Reindeer[]
+  // reindeer Reindeer[]
 }
 
-model Reindeer {
-  id                 Int    @id @default(autoincrement())
-  name               String
-  description_of_use String
-  range              Range  @relation(fields: [range_id], references: [id])
-  range_id           Int
+model Reindeers {
+    id Int @id @default(autoincrement())
+  name String
+  type String
+  available Boolean @default(false)
+  skills Json
+  position Positions?
 }
+
+model ReindeerOrganizations {
+  id Int @id @default(autoincrement())
+  name String
+  isSelected Boolean @default(false)
+  isAvailable Boolean @default(false)
+  positions Positions[]
+}
+
+model Positions {
+  id Int @id @default(autoincrement())
+  position Int @unique
+  reindeerId Int? @unique
+  organizationId Int
+  reindeer Reindeers? @relation(fields: [reindeerId], references: [id])
+  reindeerOrganizations ReindeerOrganizations @relation(fields: [organizationId], references: [id])
+}
+
 
 model Members {
   id       Int    @id @default(autoincrement())
