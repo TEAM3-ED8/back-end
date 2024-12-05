@@ -33,14 +33,21 @@
    ```bash
    touch .env
    ```
-<!-- 
+
 4. write to .env
 
    ```bash
-   DATABASE_URL="postgresql://postgres:PpVknpeLsATaSpBPvAGPgveCUqtMSDwc@junction.proxy.rlwy.net:29280/railway"
-   ``` -->
+   DATABASE_URL=
+   ```
 
-4. run the project
+5. run the project
+
    ```bash
    pnpm run dev
+   ```
+
+6. run data example
+
+   ```bash
+   pnpm db:seed
    ```
