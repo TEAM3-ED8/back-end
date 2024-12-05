@@ -2,15 +2,16 @@ import { Reindeer, type Reindeers } from "@prisma/client"
 import { prisma } from "../prisma"
 import { ClientError } from "../utilities"
 
-export const createReindeer = async (reindeer: Reindeers) => {
-  return await prisma.reindeers.create({
-    data: reindeer
+export const getAllReindeer = async () => {
+  return await prisma.reindeers.findMany({
+    include: { skills: true }
   })
 }
 
 export const getByIdReineer = async ({ id }: { id: Reindeers["id"] }) => {
   const reindeer = await prisma.reindeers.findUnique({
-    where: { id }
+    where: { id },
+    include: { skills: true }
   })
 
   if (!reindeer)
@@ -23,9 +24,19 @@ export const getByIdReineer = async ({ id }: { id: Reindeers["id"] }) => {
   return reindeer
 }
 
-export const getAllReindeer = async () => {
-  return await prisma.reindeers.findMany()
+export const createReindeer = async (reindeer: Reindeers) => {
+  return await prisma.reindeers.create({
+    data: {
+      name: reindeer.name,
+      type: reindeer.type,
+      skills: {
+        create: reindeer.skills
+      }
+    },
+    include: { skills: true }
+  })
 }
+
 export const updateReindeer = async (
   id: Reindeers["id"],
   reindeer: Reindeers
@@ -34,12 +45,22 @@ export const updateReindeer = async (
 
   return await prisma.reindeers.update({
     where: { id },
-    data: reindeer
+    data: {
+      name: reindeer.name,
+      type: reindeer.type,
+      skills: {
+        deleteMany: {},
+        create: reindeer.skills
+      }
+    },
+    include: { skills: true }
   })
 }
 
 export const deleteReindeer = async ({ id }: { id: Reindeers["id"] }) => {
   await getByIdReineer({ id })
+
+  await prisma.skills.deleteMany({ where: { reindeerId: id } })
 
   return await prisma.reindeers.delete({
     where: { id }
