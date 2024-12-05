@@ -1,4 +1,4 @@
-import { Elves, Prisma } from "@prisma/client"
+import { Elves, type Prisma } from "@prisma/client"
 import { prisma } from "../prisma"
 import { ClientError, ServerError } from "../utilities"
 export type createElveType = Omit<Elves, "id" | "isDeleted">
@@ -24,44 +24,44 @@ export const getByIdElve = async ({ id }: { id: number }) => {
 export const getAllElves = async ({
   page = 1,
   limit = 10,
-  sortBy = 'id',
-  sortOrder = 'asc',
+  sortBy = "id",
+  sortOrder = "asc",
   filter = {}
 }: {
   page: number
   limit: number
   sortBy?: keyof Elves
-  sortOrder?: 'asc' | 'desc'
+  sortOrder?: "asc" | "desc"
   filter?: Partial<Record<keyof Elves, string>>
 }) => {
-  const where: Prisma.ElvesWhereInput = {};
+  const where: Prisma.ElvesWhereInput = {}
 
   if (filter.name) {
     where.name = {
       contains: filter.name,
-      mode: 'insensitive'
-    };
+      mode: "insensitive"
+    }
   }
 
-  const totalItems = await prisma.elves.count({ where });
-  const totalPages = Math.max(1, Math.ceil(totalItems / limit));
+  const totalItems = await prisma.elves.count({ where })
+  const totalPages = Math.max(1, Math.ceil(totalItems / limit))
 
-  const safePageNumber = Math.max(1, Math.min(page, totalPages));
+  const safePageNumber = Math.max(1, Math.min(page, totalPages))
 
   const response = await prisma.elves.findMany({
     where,
     skip: (safePageNumber - 1) * limit,
     take: limit,
     orderBy: { [sortBy]: sortOrder }
-  });
+  })
 
   return {
     data: response,
     count: totalItems,
     current_page: safePageNumber,
     pages: totalPages
-  };
-};
+  }
+}
 
 export const updateElve = async (id: Elves["id"], elve: Elves) => {
   await getByIdElve({ id })
@@ -105,7 +105,10 @@ export const deleteElve = async ({
   }
 }
 
-export const updateElveStatus = async (id: Elves["id"], isDeleted: boolean): Promise<Elves> => {
+export const updateElveStatus = async (
+  id: Elves["id"],
+  isDeleted: boolean
+): Promise<Elves> => {
   const elfFound = await getByIdElve({ id })
 
   if (!elfFound) {
@@ -129,5 +132,3 @@ export const updateElveStatus = async (id: Elves["id"], isDeleted: boolean): Pro
     )
   }
 }
-
-
