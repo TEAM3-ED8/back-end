@@ -4,7 +4,7 @@ import { prisma } from "../prisma"
 
 export enum Behavior {
   Kind = "Kind",
-  Brave = "Brave",
+  Lazy = "Lazy",
   Respectful = "Respectful",
   Curious = "Curious",
   Helpful = "Helpful"
