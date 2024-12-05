@@ -56,12 +56,18 @@ model Range {
 }
 
 model Reindeers {
-    id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
   name String
   type String
-  available Boolean @default(false)
-  skills Json
-  position Positions?
+  skills Skills[]
+}
+
+model Skills {
+  id Int @id @default(autoincrement())
+  skill String
+  value Int
+  reindeer Reindeers @relation(fields: [reindeerId], references: [id])
+  reindeerId Int
 }
 
 model ReindeerOrganizations {
@@ -74,11 +80,12 @@ model ReindeerOrganizations {
 
 model Positions {
   id Int @id @default(autoincrement())
-  position Int @unique
-  reindeerId Int? @unique
-  organizationId Int
-  reindeer Reindeers? @relation(fields: [reindeerId], references: [id])
+  position Int
+
+  reindeerId Int?
+  
   reindeerOrganizations ReindeerOrganizations @relation(fields: [organizationId], references: [id])
+  organizationId Int
 }
 
 
