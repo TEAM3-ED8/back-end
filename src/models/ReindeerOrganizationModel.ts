@@ -63,7 +63,10 @@ export const updateOrganization = async (
       isAvailable: organization.isAvailable,
       positions: {
         deleteMany: {},
-        create: organization.positions
+        create: organization.positions.map(({ position, reindeerId }) => ({
+          position,
+          reindeerId
+        }))
       }
     },
     include: { positions: true }
