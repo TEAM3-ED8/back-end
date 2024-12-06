@@ -49,12 +49,6 @@ model Card {
   children    Childrens @relation(fields: [children_id], references: [id])
 }
 
-model Range {
-  id       Int        @id @default(autoincrement())
-  range    String
-  // reindeer Reindeer[]
-}
-
 model Reindeers {
   id Int @id @default(autoincrement())
   name String
