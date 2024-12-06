@@ -6,7 +6,7 @@ export const createCard = async (data: Card) => {
   return await prisma.card.create({ data })
 }
 
-export const getByIdCard = async ({ id }: { id: number }) => {
+export const getByIdCard = async ({ id }: { id: Card["id"] }) => {
   const card = await prisma.card.findUnique({ where: { id } })
 
   if (!card)
@@ -39,7 +39,10 @@ export const updateCard = async (id: Card["id"], card: Card) => {
   })
 }
 
-export const updateCardStatus = async (id: Card["id"], isRead: boolean): Promise<Card> => {
+export const updateCardStatus = async (
+  id: Card["id"],
+  isRead: boolean
+): Promise<Card> => {
   return await prisma.card.update({
     where: { id },
     data: { isRead }

@@ -1,7 +1,6 @@
 import { Childrens } from "@prisma/client"
 import { prisma } from "../prisma"
 
-
 export enum Behavior {
   Kind = "Kind",
   Lazy = "Lazy",
@@ -17,20 +16,17 @@ export enum LevelBehavior {
 }
 
 export type createChildrenType = Omit<Childrens, "id" | "cards"> & {
-  behavior: Behavior;
-  levelBehavior: LevelBehavior;
+  behavior: Behavior
+  levelBehavior: LevelBehavior
 }
-
 
 export const isValidBehavior = (behavior: string): behavior is Behavior => {
   return Object.values(Behavior).includes(behavior as Behavior)
 }
 
-
 export const isValidLevelBehavior = (level: string): level is LevelBehavior => {
   return Object.values(LevelBehavior).includes(level as LevelBehavior)
 }
-
 
 export const createChildren = async (data: createChildrenType) => {
   return await prisma.childrens.create({ data })
@@ -44,7 +40,7 @@ export const deleteChildren = async ({
   id,
   currentValue
 }: {
-  id: number
+  id: Childrens["id"]
   currentValue: boolean
 }) => {
   return await prisma.childrens.update({
@@ -59,7 +55,7 @@ export const updateChildrens = async ({
   id,
   data
 }: {
-  id: number
+  id: Childrens["id"]
   data: createChildrenType
 }) => {
   return await prisma.childrens.update({

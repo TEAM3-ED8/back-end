@@ -8,7 +8,7 @@ export const getAllMembers = async () => {
   return members
 }
 
-export const getMemberById = async ({ id }: { id: number }) => {
+export const getMemberById = async ({ id }: { id: Members["id"] }) => {
   const member = await prisma.members.findUnique({ where: { id } })
 
   if (!member) {
