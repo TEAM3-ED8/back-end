@@ -73,16 +73,16 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
     )
   }
 
-  if (typeof lat !== "number" || typeof lng !== "number") {
+  if (typeof lat !== "string" || typeof lng !== "string") {
     throw new ClientError(
       "Invalid coordinates",
       400,
-      "Latitude and longitude must be numbers"
+      "Latitude and longitude must be strings"
     )
   }
 
   try {
-    const createdAddress: Addresses = await createAddress({ lat: lat.toString(), lng: lng.toString(), display_name })
+    const createdAddress: Addresses = await createAddress({ lat, lng, display_name })
     dataResponse(res, 201, createdAddress, "Address created successfully")
   } catch (error) {
     if (error instanceof ClientError) {
@@ -98,14 +98,9 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
   if (id && isNaN(Number(id)))
     throw new ClientError("Invalid ID", 400, "ID must be a Number")
 
-  const address: Addresses = req.body
+  const { lat, lng, display_name, search_date } = req.body
 
-  if (
-    !address.lat ||
-    !address.lng ||
-    !address.display_name ||
-    !address.search_date
-  ) {
+  if (!lat || !lng || !display_name || !search_date) {
     throw new ClientError(
       "All fields are required",
       400,
@@ -113,7 +108,15 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
     )
   }
 
-  const updatedAddress: Addresses = await updateAddress(Number(id), address)
+  if (typeof lat !== "string" || typeof lng !== "string") {
+    throw new ClientError(
+      "Invalid coordinates",
+      400,
+      "Latitude and longitude must be strings"
+    )
+  }
+
+  const updatedAddress: Addresses = await updateAddress(Number(id), { lat, lng, display_name, search_date })
   dataResponse(res, 200, updatedAddress, "Address updated successfully")
 })
 
@@ -126,3 +129,4 @@ export const remove = catchedAsync(async (req: Request, res: Response) => {
   const deletedAddress: Addresses = await deleteAddress({ id: Number(id) })
   dataResponse(res, 200, deletedAddress, "Address deleted successfully")
 })
+
