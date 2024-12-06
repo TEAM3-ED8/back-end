@@ -98,3 +98,22 @@ model Members {
   github   String
   linkedin String
 }
+model SantaCalories {
+  id            Int      @id @default(1)
+  totalCookies  Int      @default(0)
+  totalConsumed Int      @default(0) 
+  totalCalories Int      @default(0)
+  cookies       Cookie[]
+}
+
+model Cookie {
+  id            Int           @id @default(autoincrement())
+  name          String
+  calories      Int
+  quantity      Int
+  consumed      Int?          @default(0)
+  totalCalories Int?         @default(0)
+  createdAt     DateTime     @default(now())
+  santa         SantaCalories @relation(fields: [santaId], references: [id])
+  santaId       Int          @default(1)
+}
