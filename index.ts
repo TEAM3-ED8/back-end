@@ -1,7 +1,7 @@
 import { app } from "./src/app"
-// import swaggerSetup from "./swagger";
+import swaggerSetup from "./src/swagger";
 const PORT = process.env.PORT || 3000
-// swaggerSetup(app)
+swaggerSetup(app)
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`)
 })
