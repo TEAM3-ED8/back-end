@@ -7,7 +7,7 @@ import {
   updateOrganization
 } from "../models/ReindeerOrganizationModel"
 import { catchedAsync, ClientError, dataResponse } from "../utilities"
-import type { ReindeerOrganizations } from "@prisma/client"
+import type { ReindeerOrganizations, Positions } from "@prisma/client"
 
 export const getAll = catchedAsync(async (req: Request, res: Response) => {
   const allOrganizations = await getAllOrganizations()
@@ -38,7 +38,6 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
   const { name, isSelected, isAvailable, positions } = req.body
 
   if (!name || !positions) {
-    console.log("aquiii")
     throw new ClientError(
       "All fields are required",
       400,
@@ -46,16 +45,14 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
     )
   }
 
-  const organization: ReindeerOrganizations = {
+  const organization: Omit<ReindeerOrganizations, 'id'> & { positions: Omit<Positions, 'id' | 'organizationId'>[] } = {
     name,
-    isAvailable,
-    isSelected,
+    isAvailable: isAvailable ?? false,
+    isSelected: isSelected ?? false,
     positions
   }
 
-  const createdOrganization: ReindeerOrganizations = await createOrganization(
-    organization
-  )
+  const createdOrganization = await createOrganization(organization)
 
   dataResponse(
     res,
@@ -81,14 +78,14 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
     )
   }
 
-  const organization: ReindeerOrganizations = {
+  const organization: Omit<ReindeerOrganizations, 'id'> & { positions: Omit<Positions, 'id' | 'organizationId'>[] } = {
     name,
-    isAvailable,
-    isSelected,
+    isAvailable: isAvailable ?? false,
+    isSelected: isSelected ?? false,
     positions
   }
 
-  const updatedOrganization: ReindeerOrganizations = await updateOrganization(
+  const updatedOrganization = await updateOrganization(
     Number(id),
     organization
   )
@@ -126,3 +123,4 @@ export const remove = catchedAsync(async (req: Request, res: Response) => {
     "Organization deleted successfully."
   )
 })
+

@@ -1,7 +1,6 @@
-import type { ReindeerOrganizations } from "@prisma/client"
+import type { ReindeerOrganizations, Positions } from "@prisma/client"
 import { prisma } from "../prisma"
 import { ClientError } from "../utilities"
-import { createPosition } from "./PositionModel"
 
 export const getAllOrganizations = async () => {
   const allOrganizations = await prisma.reindeerOrganizations.findMany({
@@ -32,7 +31,7 @@ export const getByIdOrganization = async ({
 }
 
 export const createOrganization = async (
-  organization: ReindeerOrganizations
+  organization: Omit<ReindeerOrganizations, 'id'> & { positions: Omit<Positions, 'id' | 'organizationId'>[] }
 ) => {
   const newOrganization = await prisma.reindeerOrganizations.create({
     data: {
@@ -51,7 +50,7 @@ export const createOrganization = async (
 
 export const updateOrganization = async (
   id: ReindeerOrganizations["id"],
-  organization: ReindeerOrganizations
+  organization: Omit<ReindeerOrganizations, 'id'> & { positions: Omit<Positions, 'id' | 'organizationId'>[] }
 ) => {
   await getByIdOrganization({ id })
 
@@ -84,3 +83,4 @@ export const deleteOrganization = async ({
 
   return prisma.reindeerOrganizations.delete({ where: { id } })
 }
+
