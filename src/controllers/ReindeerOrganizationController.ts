@@ -1,4 +1,6 @@
+import type { Positions } from "@prisma/client"
 import type { Request, Response } from "express"
+import type { ReindeerOrganizations } from "../interfaces"
 import {
   createOrganization,
   deleteOrganization,
@@ -7,7 +9,6 @@ import {
   updateOrganization
 } from "../models/ReindeerOrganizationModel"
 import { catchedAsync, ClientError, dataResponse } from "../utilities"
-import type { ReindeerOrganizations } from "@prisma/client"
 
 export const getAll = catchedAsync(async (req: Request, res: Response) => {
   const allOrganizations = await getAllOrganizations()
@@ -37,8 +38,7 @@ export const getById = catchedAsync(async (req: Request, res: Response) => {
 export const create = catchedAsync(async (req: Request, res: Response) => {
   const { name, isSelected, isAvailable, positions } = req.body
 
-  if (!name || !positions) {
-    console.log("aquiii")
+  if (!name || !Array.isArray(positions) || positions.length === 0) {
     throw new ClientError(
       "All fields are required",
       400,
@@ -46,11 +46,11 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
     )
   }
 
-  const organization: ReindeerOrganizations = {
+  const organization: Omit<ReindeerOrganizations, "id"> = {
     name,
     isAvailable,
     isSelected,
-    positions
+    positions: positions.map((pos: Positions): Positions => (pos))
   }
 
   const createdOrganization: ReindeerOrganizations = await createOrganization(
@@ -73,7 +73,7 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
 
   const { name, isSelected, isAvailable, positions } = req.body
 
-  if (!name || !positions) {
+  if (!name || !Array.isArray(positions) || positions.length === 0) {
     throw new ClientError(
       "All fields are required",
       400,
@@ -82,14 +82,14 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
   }
 
   const organization: ReindeerOrganizations = {
+    id: Number(id),
     name,
     isAvailable,
     isSelected,
-    positions
+    positions: positions.map((pos: Positions): Positions => pos)
   }
 
   const updatedOrganization: ReindeerOrganizations = await updateOrganization(
-    Number(id),
     organization
   )
 

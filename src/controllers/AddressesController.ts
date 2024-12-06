@@ -99,6 +99,7 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
     }
     throw new ServerError(
       "Failed to create address",
+      500,
       "An unexpected error occurred while creating the address"
     )
   }

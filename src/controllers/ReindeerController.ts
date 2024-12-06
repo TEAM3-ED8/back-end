@@ -1,10 +1,11 @@
-import type { Reindeers } from "@prisma/client"
+import type { Skills } from "@prisma/client"
 import { Request, Response } from "express"
+import type { Reindeers } from "../interfaces"
 import {
   createReindeer,
   deleteReindeer,
   getAllReindeer,
-  getByIdReineer,
+  getByIdReindeer,
   updateReindeer
 } from "../models/ReindeerModel"
 import { catchedAsync, ClientError, dataResponse } from "../utilities"
@@ -22,22 +23,26 @@ export const getById = catchedAsync(async (req: Request, res: Response) => {
     throw new ClientError("Invalid ID", 400, "The ID must be a Number.")
   }
 
-  const reindeer: Reindeers = await getByIdReineer({ id: Number(id) })
+  const reindeer: Reindeers = await getByIdReindeer({ id: Number(id) })
 
   dataResponse(res, 200, reindeer, "Reindeer successfully obtained")
 })
 
 export const create = catchedAsync(async (req: Request, res: Response) => {
-  const reindeer: Reindeers = req.body
+  const { name, type, skills } = req.body
 
-  const { name, type, skills } = reindeer
-
-  if (!name || !type || !skills)
+  if (!name || !type || !Array.isArray(skills) || skills.length === 0)
     throw new ClientError(
       "All fields are required",
       400,
       "Missing required fields"
     )
+
+  const reindeer: Omit<Reindeers, "id"> = {
+    name,
+    type,
+    skills: skills.map((skill: Skills): Skills => skill)
+  }
 
   const createdReindeer: Reindeers = await createReindeer(reindeer)
 
@@ -51,18 +56,23 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
     throw new ClientError("Invalid ID", 400, "The ID must be a Number.")
   }
 
-  const reindeer: Reindeers = req.body
+  const { name, type, skills } = req.body
 
-  const { name, type, skills } = reindeer
-
-  if (!name || !type || !skills)
+  if (!name || !type || !Array.isArray(skills) || skills.length === 0)
     throw new ClientError(
       "All fields are required",
       400,
       "Missing required fields"
     )
 
-  const updatedReindeer: Reindeers = await updateReindeer(Number(id), reindeer)
+  const reindeer: Reindeers = {
+    id: Number(id),
+    name,
+    type,
+    skills: skills.map((skill: Skills): Skills => skill)
+  }
+
+  const updatedReindeer: Reindeers = await updateReindeer(reindeer)
 
   dataResponse(res, 200, updatedReindeer, "Reindeer updated successfully")
 })
