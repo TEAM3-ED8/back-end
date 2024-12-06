@@ -1,4 +1,4 @@
-import type { Reindeers } from "@prisma/client"
+import type { Reindeers, Skills } from "@prisma/client"
 import { Request, Response } from "express"
 import {
   createReindeer,
@@ -28,9 +28,7 @@ export const getById = catchedAsync(async (req: Request, res: Response) => {
 })
 
 export const create = catchedAsync(async (req: Request, res: Response) => {
-  const reindeer: Reindeers = req.body
-
-  const { name, type, skills } = reindeer
+  const { name, type, skills } = req.body
 
   if (!name || !type || !skills)
     throw new ClientError(
@@ -39,7 +37,13 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
       "Missing required fields"
     )
 
-  const createdReindeer: Reindeers = await createReindeer(reindeer)
+  const reindeer: Omit<Reindeers, 'id'> & { skills: Omit<Skills, 'id' | 'reindeerId'>[] } = {
+    name,
+    type,
+    skills
+  }
+
+  const createdReindeer = await createReindeer(reindeer)
 
   dataResponse(res, 201, createdReindeer, "Reindeer created successfully")
 })
@@ -51,9 +55,7 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
     throw new ClientError("Invalid ID", 400, "The ID must be a Number.")
   }
 
-  const reindeer: Reindeers = req.body
-
-  const { name, type, skills } = reindeer
+  const { name, type, skills } = req.body
 
   if (!name || !type || !skills)
     throw new ClientError(
@@ -62,7 +64,13 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
       "Missing required fields"
     )
 
-  const updatedReindeer: Reindeers = await updateReindeer(Number(id), reindeer)
+  const reindeer: Omit<Reindeers, 'id'> & { skills: Omit<Skills, 'id' | 'reindeerId'>[] } = {
+    name,
+    type,
+    skills
+  }
+
+  const updatedReindeer = await updateReindeer(Number(id), reindeer)
 
   dataResponse(res, 200, updatedReindeer, "Reindeer updated successfully")
 })
@@ -78,3 +86,4 @@ export const remove = catchedAsync(async (req: Request, res: Response) => {
 
   dataResponse(res, 200, deletedReindeer, "Reindeer deleted successfully")
 })
+
