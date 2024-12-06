@@ -1,6 +1,5 @@
-import type { Skills } from "@prisma/client"
+import type { Reindeers, Skills } from "@prisma/client"
 import { Request, Response } from "express"
-import type { Reindeers } from "../interfaces"
 import {
   createReindeer,
   deleteReindeer,
@@ -38,13 +37,13 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
       "Missing required fields"
     )
 
-  const reindeer: Omit<Reindeers, "id"> = {
+  const reindeer: Omit<Reindeers, 'id'> & { skills: Omit<Skills, 'id' | 'reindeerId'>[] } = {
     name,
     type,
-    skills: skills.map((skill: Skills): Skills => skill)
+    skills
   }
 
-  const createdReindeer: Reindeers = await createReindeer(reindeer)
+  const createdReindeer = await createReindeer(reindeer)
 
   dataResponse(res, 201, createdReindeer, "Reindeer created successfully")
 })
@@ -65,14 +64,13 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
       "Missing required fields"
     )
 
-  const reindeer: Reindeers = {
-    id: Number(id),
+  const reindeer: Omit<Reindeers, 'id'> & { skills: Omit<Skills, 'id' | 'reindeerId'>[] } = {
     name,
     type,
-    skills: skills.map((skill: Skills): Skills => skill)
+    skills
   }
 
-  const updatedReindeer: Reindeers = await updateReindeer(reindeer)
+  const updatedReindeer = await updateReindeer(Number(id), reindeer)
 
   dataResponse(res, 200, updatedReindeer, "Reindeer updated successfully")
 })
@@ -88,3 +86,4 @@ export const remove = catchedAsync(async (req: Request, res: Response) => {
 
   dataResponse(res, 200, deletedReindeer, "Reindeer deleted successfully")
 })
+

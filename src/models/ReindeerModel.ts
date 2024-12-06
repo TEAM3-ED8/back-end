@@ -1,4 +1,4 @@
-import type { Reindeers } from "../interfaces"
+import { type Reindeers, type Skills } from "@prisma/client"
 import { prisma } from "../prisma"
 import { ClientError } from "../utilities"
 
@@ -24,7 +24,7 @@ export const getByIdReindeer = async ({ id }: { id: Reindeers["id"] }) => {
   return reindeer
 }
 
-export const createReindeer = async (reindeer: Omit<Reindeers, "id">) => {
+export const createReindeer = async (reindeer: Omit<Reindeers, 'id'> & { skills: Omit<Skills, 'id' | 'reindeerId'>[] }) => {
   return await prisma.reindeers.create({
     data: {
       name: reindeer.name,
@@ -38,9 +38,10 @@ export const createReindeer = async (reindeer: Omit<Reindeers, "id">) => {
 }
 
 export const updateReindeer = async (
-  reindeer: Reindeers
+  id: Reindeers["id"],
+  reindeer: Omit<Reindeers, 'id'> & { skills: Omit<Skills, 'id' | 'reindeerId'>[] }
 ) => {
-  const { id, name, type, skills } = reindeer
+  const { name, type, skills } = reindeer
 
   await getByIdReindeer({ id })
 
@@ -71,3 +72,4 @@ export const deleteReindeer = async ({ id }: { id: Reindeers["id"] }) => {
 export const getIncludesID = async ({ ids }: { ids: number[] }) => {
   return await prisma.reindeers.findMany({ where: { id: { in: ids } } })
 }
+

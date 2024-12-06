@@ -1,11 +1,6 @@
 import type { Addresses } from "@prisma/client"
 import type { Request, Response } from "express"
-import {
-  catchedAsync,
-  ClientError,
-  dataResponse,
-  ServerError
-} from "../utilities"
+import { ClientError, ServerError, dataResponse, catchedAsync } from "../utilities"
 import {
   createAddress,
   deleteAddress,
@@ -87,11 +82,7 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
   }
 
   try {
-    const createdAddress: Addresses = await createAddress({
-      lat: lat.toString(),
-      lng: lng.toString(),
-      display_name
-    })
+    const createdAddress: Addresses = await createAddress({ lat: lat.toString(), lng: lng.toString(), display_name })
     dataResponse(res, 201, createdAddress, "Address created successfully")
   } catch (error) {
     if (error instanceof ClientError) {

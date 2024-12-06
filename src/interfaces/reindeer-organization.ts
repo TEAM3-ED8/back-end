@@ -1,6 +1,6 @@
 import type { Positions } from "@prisma/client";
 
-export interface ReindeerOrganizations {
+interface ReindeerOrganizations {
   id: number;
   name: string;
   isSelected: boolean;

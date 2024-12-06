@@ -1,6 +1,6 @@
 import type { Skills } from "@prisma/client";
 
-export interface Reindeers {
+interface Reindeers {
   id: number;
   name: string;
   type: string;

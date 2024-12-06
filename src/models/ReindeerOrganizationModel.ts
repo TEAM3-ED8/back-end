@@ -1,5 +1,4 @@
-import type { Positions } from "@prisma/client"
-import type { ReindeerOrganizations } from "../interfaces"
+import type { ReindeerOrganizations, Positions } from "@prisma/client"
 import { prisma } from "../prisma"
 import { ClientError } from "../utilities"
 
@@ -32,7 +31,7 @@ export const getByIdOrganization = async ({
 }
 
 export const createOrganization = async (
-  organization: Omit<ReindeerOrganizations, "id">
+  organization: Omit<ReindeerOrganizations, 'id'> & { positions: Omit<Positions, 'id' | 'organizationId'>[] }
 ) => {
   const newOrganization = await prisma.reindeerOrganizations.create({
     data: {
@@ -50,31 +49,23 @@ export const createOrganization = async (
 }
 
 export const updateOrganization = async (
-
-  organization: ReindeerOrganizations
+  id: ReindeerOrganizations["id"],
+  organization: Omit<ReindeerOrganizations, 'id'> & { positions: Omit<Positions, 'id' | 'organizationId'>[] }
 ) => {
-  await getByIdOrganization({ id: organization.id })
+  await getByIdOrganization({ id })
 
   return await prisma.reindeerOrganizations.update({
-    where: { id: organization.id },
+    where: { id },
     data: {
       name: organization.name,
       isSelected: organization.isSelected,
       isAvailable: organization.isAvailable,
       positions: {
         deleteMany: {},
-        create: organization.positions.map(
-          ({
-            position,
-            reindeerId
-          }: {
-            position: Positions["position"]
-            reindeerId: Positions["reindeerId"]
-          }) => ({
-            position,
-            reindeerId
-          })
-        )
+        create: organization.positions.map(({ position, reindeerId }) => ({
+          position,
+          reindeerId
+        }))
       }
     },
     include: { positions: true }
@@ -92,3 +83,4 @@ export const deleteOrganization = async ({
 
   return prisma.reindeerOrganizations.delete({ where: { id } })
 }
+

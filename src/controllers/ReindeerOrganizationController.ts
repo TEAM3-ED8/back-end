@@ -1,6 +1,4 @@
-import type { Positions } from "@prisma/client"
 import type { Request, Response } from "express"
-import type { ReindeerOrganizations } from "../interfaces"
 import {
   createOrganization,
   deleteOrganization,
@@ -9,6 +7,7 @@ import {
   updateOrganization
 } from "../models/ReindeerOrganizationModel"
 import { catchedAsync, ClientError, dataResponse } from "../utilities"
+import type { ReindeerOrganizations, Positions } from "@prisma/client"
 
 export const getAll = catchedAsync(async (req: Request, res: Response) => {
   const allOrganizations = await getAllOrganizations()
@@ -38,7 +37,7 @@ export const getById = catchedAsync(async (req: Request, res: Response) => {
 export const create = catchedAsync(async (req: Request, res: Response) => {
   const { name, isSelected, isAvailable, positions } = req.body
 
-  if (!name || !Array.isArray(positions) || positions.length === 0) {
+  if (!name || !positions) {
     throw new ClientError(
       "All fields are required",
       400,
@@ -46,16 +45,14 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
     )
   }
 
-  const organization: Omit<ReindeerOrganizations, "id"> = {
+  const organization: Omit<ReindeerOrganizations, 'id'> & { positions: Omit<Positions, 'id' | 'organizationId'>[] } = {
     name,
-    isAvailable,
-    isSelected,
-    positions: positions.map((pos: Positions): Positions => (pos))
+    isAvailable: isAvailable ?? false,
+    isSelected: isSelected ?? false,
+    positions
   }
 
-  const createdOrganization: ReindeerOrganizations = await createOrganization(
-    organization
-  )
+  const createdOrganization = await createOrganization(organization)
 
   dataResponse(
     res,
@@ -73,7 +70,7 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
 
   const { name, isSelected, isAvailable, positions } = req.body
 
-  if (!name || !Array.isArray(positions) || positions.length === 0) {
+  if (!name || !positions) {
     throw new ClientError(
       "All fields are required",
       400,
@@ -81,15 +78,15 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
     )
   }
 
-  const organization: ReindeerOrganizations = {
-    id: Number(id),
+  const organization: Omit<ReindeerOrganizations, 'id'> & { positions: Omit<Positions, 'id' | 'organizationId'>[] } = {
     name,
-    isAvailable,
-    isSelected,
-    positions: positions.map((pos: Positions): Positions => pos)
+    isAvailable: isAvailable ?? false,
+    isSelected: isSelected ?? false,
+    positions
   }
 
-  const updatedOrganization: ReindeerOrganizations = await updateOrganization(
+  const updatedOrganization = await updateOrganization(
+    Number(id),
     organization
   )
 
@@ -126,3 +123,4 @@ export const remove = catchedAsync(async (req: Request, res: Response) => {
     "Organization deleted successfully."
   )
 })
+
