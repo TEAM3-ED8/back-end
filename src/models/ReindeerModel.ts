@@ -1,4 +1,4 @@
-import { Reindeer, type Reindeers } from "@prisma/client"
+import { type Reindeers } from "@prisma/client"
 import { prisma } from "../prisma"
 import { ClientError } from "../utilities"
 

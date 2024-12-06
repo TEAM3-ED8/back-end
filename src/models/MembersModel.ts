@@ -1,3 +1,4 @@
+import type { Members } from "@prisma/client"
 import { prisma } from "../prisma"
 import { ClientError } from "../utilities/errors"
 
@@ -21,6 +22,6 @@ export const getMemberById = async ({ id }: { id: number }) => {
   return member
 }
 
-export const createMember = async (member) => {
+export const createMember = async (member: Members) => {
   return await prisma.members.create({ data: member })
 }
