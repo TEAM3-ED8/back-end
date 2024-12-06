@@ -21,12 +21,12 @@ exports.getById = (0, utilities_1.catchedAsync)((req, res) => __awaiter(void 0, 
     if (id && isNaN(Number(id))) {
         throw new utilities_1.ClientError("Invalid ID", 400, "The ID must be a Number.");
     }
-    const reindeer = yield (0, ReindeerModel_1.getByIdReineer)({ id: Number(id) });
+    const reindeer = yield (0, ReindeerModel_1.getByIdReindeer)({ id: Number(id) });
     (0, utilities_1.dataResponse)(res, 200, reindeer, "Reindeer successfully obtained");
 }));
 exports.create = (0, utilities_1.catchedAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, type, skills } = req.body;
-    if (!name || !type || !skills)
+    if (!name || !type || !Array.isArray(skills) || skills.length === 0)
         throw new utilities_1.ClientError("All fields are required", 400, "Missing required fields");
     const reindeer = {
         name,
@@ -42,7 +42,7 @@ exports.update = (0, utilities_1.catchedAsync)((req, res) => __awaiter(void 0, v
         throw new utilities_1.ClientError("Invalid ID", 400, "The ID must be a Number.");
     }
     const { name, type, skills } = req.body;
-    if (!name || !type || !skills)
+    if (!name || !type || !Array.isArray(skills) || skills.length === 0)
         throw new utilities_1.ClientError("All fields are required", 400, "Missing required fields");
     const reindeer = {
         name,
