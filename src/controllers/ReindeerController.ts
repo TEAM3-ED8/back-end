@@ -4,7 +4,7 @@ import {
   createReindeer,
   deleteReindeer,
   getAllReindeer,
-  getByIdReineer,
+  getByIdReindeer,
   updateReindeer
 } from "../models/ReindeerModel"
 import { catchedAsync, ClientError, dataResponse } from "../utilities"
@@ -22,7 +22,7 @@ export const getById = catchedAsync(async (req: Request, res: Response) => {
     throw new ClientError("Invalid ID", 400, "The ID must be a Number.")
   }
 
-  const reindeer: Reindeers = await getByIdReineer({ id: Number(id) })
+  const reindeer: Reindeers = await getByIdReindeer({ id: Number(id) })
 
   dataResponse(res, 200, reindeer, "Reindeer successfully obtained")
 })
@@ -30,7 +30,7 @@ export const getById = catchedAsync(async (req: Request, res: Response) => {
 export const create = catchedAsync(async (req: Request, res: Response) => {
   const { name, type, skills } = req.body
 
-  if (!name || !type || !skills)
+  if (!name || !type || !Array.isArray(skills) || skills.length === 0)
     throw new ClientError(
       "All fields are required",
       400,
@@ -57,7 +57,7 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
 
   const { name, type, skills } = req.body
 
-  if (!name || !type || !skills)
+  if (!name || !type || !Array.isArray(skills) || skills.length === 0)
     throw new ClientError(
       "All fields are required",
       400,
