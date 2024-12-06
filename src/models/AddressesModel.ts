@@ -1,13 +1,13 @@
 import type { Addresses } from "@prisma/client"
 import { prisma } from "../prisma"
-import { ClientError, ServerError } from "../utilities/errors"
+import { ClientError } from "../utilities/errors"
 
 export const getAllAddress = async () => {
   const addresses: Addresses[] = await prisma.addresses.findMany()
   return addresses
 }
 
-export const getByIdAddress = async ({ id }: { id: number }) => {
+export const getByIdAddress = async ({ id }: { id: Addresses["id"] }) => {
   const address = await prisma.addresses.findUnique({ where: { id } })
 
   if (!address)
@@ -18,15 +18,16 @@ export const getByIdAddress = async ({ id }: { id: number }) => {
     )
 
   return address
-
 }
 
-export const createAddress = async (address: Omit<Addresses, 'id' | 'search_date'>) => {
+export const createAddress = async (
+  address: Omit<Addresses, "id" | "search_date">
+) => {
   return await prisma.addresses.create({
     data: {
       ...address,
       lat: address.lat.toString(),
-      lng: address.lng.toString(),
+      lng: address.lng.toString()
     }
   })
 }
@@ -43,8 +44,7 @@ export const updateAddress = async (
   })
 }
 
-
-export const deleteAddress = async ({ id }: { id: number }) => {
+export const deleteAddress = async ({ id }: { id: Addresses["id"] }) => {
   await getByIdAddress({ id })
 
   return await prisma.addresses.delete({ where: { id } })
@@ -69,18 +69,19 @@ export const filterBySearchDate = async ({
 }: {
   searchDate: Addresses["search_date"]
 }) => {
-  const address: Addresses = await prisma.addresses.findFirst({
-    select: {
-      id: true,
-      lat: true,
-      lng: true,
-      display_name: true,
-      search_date: true
-    },
-    where: {
-      search_date: searchDate
-    }
-  })
+  const address: Addresses | null =
+    (await prisma.addresses.findFirst({
+      select: {
+        id: true,
+        lat: true,
+        lng: true,
+        display_name: true,
+        search_date: true
+      },
+      where: {
+        search_date: searchDate
+      }
+    })) || null
 
   if (!address)
     throw new ClientError(

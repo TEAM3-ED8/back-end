@@ -1,17 +1,15 @@
+import type { Elves } from "@prisma/client"
 import { Request, Response } from "express"
+import type { Pagination } from "../interfaces"
 import {
   createElve,
   deleteElve,
   getAllElves,
   getByIdElve,
   updateElve,
-  updateElveStatus,
-  createElveType,
-  updateElveType
+  updateElveStatus
 } from "../models/ElvesModel"
 import { catchedAsync, ClientError, dataResponse } from "../utilities"
-import type { Elves } from "@prisma/client"
-import type { Pagination } from "../interfaces"
 
 export const getAll = catchedAsync(async (req: Request, res: Response) => {
   const { page, limit, sortBy, sortOrder, name } = req.query
@@ -115,7 +113,7 @@ export const remove = catchedAsync(async (req: Request, res: Response) => {
     )
 
   const elfRemoved: Elves = await deleteElve({
-    id,
+    id: Number(id),
     currentValue: elfFound.isDeleted
   })
 

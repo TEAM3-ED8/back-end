@@ -37,15 +37,19 @@ export const updateRange = async ({
   range: string
   reindeers: Omit<Reindeer, "range_id">[]
 }) => {
-  return await prisma.range.update({ where: { id }, data: { range,
-    reindeer:{
-      upsert:reindeers.map(({id,...reindeer})=>({
-        where:{id},
-        update:reindeer,
-        create:reindeer
-      }))
+  return await prisma.range.update({
+    where: { id },
+    data: {
+      range,
+      reindeer: {
+        upsert: reindeers.map(({ id, ...reindeer }) => ({
+          where: { id },
+          update: reindeer,
+          create: reindeer
+        }))
+      }
     }
-   } })
+  })
 }
 export const deleteRange = async ({ id }: { id: number }) => {
   return await prisma.range.delete({
