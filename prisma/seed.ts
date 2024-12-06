@@ -1,7 +1,32 @@
 import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
+async function cleanDatabase() {
+  await prisma.positions.deleteMany()
+  await prisma.skills.deleteMany()
+  await prisma.cookie.deleteMany()
+  await prisma.santaCalories.deleteMany()
+  await prisma.members.deleteMany()
+  await prisma.reindeerOrganizations.deleteMany()
+  await prisma.reindeers.deleteMany()
+  await prisma.addresses.deleteMany()
+  await prisma.elves.deleteMany()
+
+  console.log("Base de datos limpiada exitosamente")
+}
+
 async function main() {
+  await cleanDatabase()
+  //Santa
+  await prisma.santaCalories.create({
+    data: {
+      id: 1,
+      totalCookies: 0,
+      totalConsumed: 0,
+      totalCalories: 0
+    }
+  })
+
   // Elves
   await prisma.elves.createMany({
     data: [
@@ -96,7 +121,7 @@ async function main() {
           },
           {
             skill: "Navigation",
-            value: 95,
+            value: 95
           }
         ]
       }
@@ -118,8 +143,7 @@ async function main() {
         ]
       }
     }
-  });
-
+  })
 
   // Members
   await prisma.members.createMany({
