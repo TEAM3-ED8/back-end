@@ -8,7 +8,7 @@
     "dev": "tsx watch index.ts",
     "start": "node dist/index.js",
     "db:seed": "prisma db seed",
-    "build": "tsc",
+    "build": "tsc && cp src/*.ts dist/",
     "postinstall": "prisma generate"
   },
   "prisma": {
