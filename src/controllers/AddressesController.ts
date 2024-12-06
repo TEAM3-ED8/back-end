@@ -1,13 +1,18 @@
 import type { Addresses } from "@prisma/client"
 import type { Request, Response } from "express"
-import { ClientError,dataResponse,catchedAsync } from "../utilities"
 import {
+  catchedAsync,
+  ClientError,
+  dataResponse,
+  ServerError
+} from "../utilities"
+import {
+  createAddress,
+  deleteAddress,
+  filterBySearchDate,
   filterLatestSearches,
   getByIdAddress,
-  createAddress,
-  updateAddress,
-  deleteAddress,
-  filterBySearchDate
+  updateAddress
 } from "./../models/AddressesModel"
 
 import { prisma } from "../prisma"
@@ -46,10 +51,7 @@ export const getByDate = catchedAsync(async (req, res) => {
 
   if (!search_date || search_date.trim().length === 0) {
     throw new ClientError("Invalid date", 400, "The date must be a string.")
-}
-
-
- 
+  }
 
   const date = new Date(search_date)
 
@@ -76,7 +78,7 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
     )
   }
 
-  if (typeof lat !== 'number' || typeof lng !== 'number') {
+  if (typeof lat !== "number" || typeof lng !== "number") {
     throw new ClientError(
       "Invalid coordinates",
       400,
@@ -85,13 +87,20 @@ export const create = catchedAsync(async (req: Request, res: Response) => {
   }
 
   try {
-    const createdAddress: Addresses = await createAddress({ lat, lng, display_name })
+    const createdAddress: Addresses = await createAddress({
+      lat: lat.toString(),
+      lng: lng.toString(),
+      display_name
+    })
     dataResponse(res, 201, createdAddress, "Address created successfully")
   } catch (error) {
     if (error instanceof ClientError) {
-      throw error;
+      throw error
     }
-    throw new ServerError("Failed to create address", "An unexpected error occurred while creating the address");
+    throw new ServerError(
+      "Failed to create address",
+      "An unexpected error occurred while creating the address"
+    )
   }
 })
 

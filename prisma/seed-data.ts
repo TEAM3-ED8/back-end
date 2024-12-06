@@ -61,7 +61,7 @@ export const SEED_DATA = {
   ],
   reindeers: {
     name: "Rudolph",
-    type: "Flying",
+    type: "Master",
     skills: [
       {
         skill: "Flying",

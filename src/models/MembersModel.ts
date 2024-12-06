@@ -1,3 +1,4 @@
+import type { Members } from "@prisma/client"
 import { prisma } from "../prisma"
 import { ClientError } from "../utilities/errors"
 
@@ -7,7 +8,7 @@ export const getAllMembers = async () => {
   return members
 }
 
-export const getMemberById = async ({ id }: { id: number }) => {
+export const getMemberById = async ({ id }: { id: Members["id"] }) => {
   const member = await prisma.members.findUnique({ where: { id } })
 
   if (!member) {
@@ -21,6 +22,6 @@ export const getMemberById = async ({ id }: { id: number }) => {
   return member
 }
 
-export const createMember = async (member) => {
+export const createMember = async (member: Members) => {
   return await prisma.members.create({ data: member })
 }
