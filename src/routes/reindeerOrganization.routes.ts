@@ -36,7 +36,7 @@ export const createReindeerOrganizationRouter = () => {
 
   /**
    * @swagger
-   * /api/reindeerOrganization:
+   * /api/reindeerOrganizations:
    *   get:
    *     summary: Retrieve all reindeer organizations
    *     tags: [ReindeerOrganization]
@@ -54,7 +54,7 @@ export const createReindeerOrganizationRouter = () => {
 
   /**
    * @swagger
-   * /api/reindeerOrganization:
+   * /api/reindeerOrganizations:
    *    get:
    *     summary: Get a reindeer organization by id
    *     tags: [ReindeerOrganization]
@@ -78,7 +78,7 @@ export const createReindeerOrganizationRouter = () => {
 
   /**
    * @swagger
-   * /api/reindeer-organization:
+   * /api/reindeerOrganizations:
    *   post:
    *     summary: Create a new reindeer organization
    *     tags: [ReindeerOrganization]
@@ -100,7 +100,7 @@ export const createReindeerOrganizationRouter = () => {
 
   /**
    * @swagger
-   * /api/reindeerOrganization:
+   * /api/reindeerOrganizations:
    *     put:
    *     summary: Update a reindeer organization
    *     tags: [ReindeerOrganization]
@@ -130,7 +130,7 @@ export const createReindeerOrganizationRouter = () => {
 
   /**
    * @swagger
-   * /api/reindeerOrganization:
+   * /api/reindeerOrganizations:
    *     delete:
    *     summary: Delete a reindeer organization
    *     tags: [ReindeerOrganization]
