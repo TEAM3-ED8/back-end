@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIncludesID = exports.deleteReindeer = exports.updateReindeer = exports.createReindeer = exports.getByIdReineer = exports.getAllReindeer = void 0;
+exports.getIncludesID = exports.deleteReindeer = exports.updateReindeer = exports.createReindeer = exports.getByIdReindeer = exports.getAllReindeer = void 0;
 const prisma_1 = require("../prisma");
 const utilities_1 = require("../utilities");
 const getAllReindeer = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -18,7 +18,7 @@ const getAllReindeer = () => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.getAllReindeer = getAllReindeer;
-const getByIdReineer = (_a) => __awaiter(void 0, [_a], void 0, function* ({ id }) {
+const getByIdReindeer = (_a) => __awaiter(void 0, [_a], void 0, function* ({ id }) {
     const reindeer = yield prisma_1.prisma.reindeers.findUnique({
         where: { id },
         include: { skills: true }
@@ -27,7 +27,7 @@ const getByIdReineer = (_a) => __awaiter(void 0, [_a], void 0, function* ({ id }
         throw new utilities_1.ClientError("Reindeer not found", 404, "No Reindeer found with the given ID");
     return reindeer;
 });
-exports.getByIdReineer = getByIdReineer;
+exports.getByIdReindeer = getByIdReindeer;
 const createReindeer = (reindeer) => __awaiter(void 0, void 0, void 0, function* () {
     return yield prisma_1.prisma.reindeers.create({
         data: {
@@ -42,15 +42,16 @@ const createReindeer = (reindeer) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.createReindeer = createReindeer;
 const updateReindeer = (id, reindeer) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, exports.getByIdReineer)({ id });
+    const { name, type, skills } = reindeer;
+    yield (0, exports.getByIdReindeer)({ id });
     return yield prisma_1.prisma.reindeers.update({
         where: { id },
         data: {
-            name: reindeer.name,
-            type: reindeer.type,
+            name,
+            type,
             skills: {
                 deleteMany: {},
-                create: reindeer.skills
+                create: skills
             }
         },
         include: { skills: true }
@@ -58,7 +59,7 @@ const updateReindeer = (id, reindeer) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.updateReindeer = updateReindeer;
 const deleteReindeer = (_a) => __awaiter(void 0, [_a], void 0, function* ({ id }) {
-    yield (0, exports.getByIdReineer)({ id });
+    yield (0, exports.getByIdReindeer)({ id });
     yield prisma_1.prisma.skills.deleteMany({ where: { reindeerId: id } });
     return yield prisma_1.prisma.reindeers.delete({
         where: { id }
