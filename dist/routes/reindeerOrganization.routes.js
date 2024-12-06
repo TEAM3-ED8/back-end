@@ -29,7 +29,7 @@ const createReindeerOrganizationRouter = () => {
     const router = (0, express_1.Router)();
     /**
      * @swagger
-     * /api/reindeer-organization:
+     * /api/reindeerOrganizations:
      *   get:
      *     summary: Retrieve all reindeer organizations
      *     tags: [ReindeerOrganization]
@@ -46,8 +46,8 @@ const createReindeerOrganizationRouter = () => {
     router.get("/", ReindeerOrganizationController_1.getAll);
     /**
      * @swagger
-     * /api/reindeer-organization/{id}:
-     *   get:
+     * /api/reindeerOrganizations:
+     *    get:
      *     summary: Get a reindeer organization by id
      *     tags: [ReindeerOrganization]
      *     parameters:
@@ -69,7 +69,7 @@ const createReindeerOrganizationRouter = () => {
     router.get("/:id", ReindeerOrganizationController_1.getById);
     /**
      * @swagger
-     * /api/reindeer-organization:
+     * /api/reindeerOrganizations:
      *   post:
      *     summary: Create a new reindeer organization
      *     tags: [ReindeerOrganization]
@@ -90,8 +90,8 @@ const createReindeerOrganizationRouter = () => {
     router.post("/", ReindeerOrganizationController_1.create);
     /**
      * @swagger
-     * /api/reindeer-organization/{id}:
-     *   put:
+     * /api/reindeerOrganizations:
+     *     put:
      *     summary: Update a reindeer organization
      *     tags: [ReindeerOrganization]
      *     parameters:
@@ -119,8 +119,8 @@ const createReindeerOrganizationRouter = () => {
     router.put("/:id", ReindeerOrganizationController_1.update);
     /**
      * @swagger
-     * /api/reindeer-organization/{id}:
-     *   delete:
+     * /api/reindeerOrganizations:
+     *     delete:
      *     summary: Delete a reindeer organization
      *     tags: [ReindeerOrganization]
      *     parameters:

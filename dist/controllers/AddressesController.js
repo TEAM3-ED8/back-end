@@ -52,11 +52,11 @@ exports.create = (0, utilities_1.catchedAsync)((req, res) => __awaiter(void 0, v
     if (!lat || !lng || !display_name) {
         throw new utilities_1.ClientError("All fields are required", 400, "Missing required fields");
     }
-    if (typeof lat !== "number" || typeof lng !== "number") {
-        throw new utilities_1.ClientError("Invalid coordinates", 400, "Latitude and longitude must be numbers");
+    if (typeof lat !== "string" || typeof lng !== "string") {
+        throw new utilities_1.ClientError("Invalid coordinates", 400, "Latitude and longitude must be strings");
     }
     try {
-        const createdAddress = yield (0, AddressesModel_1.createAddress)({ lat: lat.toString(), lng: lng.toString(), display_name });
+        const createdAddress = yield (0, AddressesModel_1.createAddress)({ lat, lng, display_name });
         (0, utilities_1.dataResponse)(res, 201, createdAddress, "Address created successfully");
     }
     catch (error) {
@@ -70,14 +70,24 @@ exports.update = (0, utilities_1.catchedAsync)((req, res) => __awaiter(void 0, v
     const { id } = req.params;
     if (id && isNaN(Number(id)))
         throw new utilities_1.ClientError("Invalid ID", 400, "ID must be a Number");
-    const address = req.body;
-    if (!address.lat ||
-        !address.lng ||
-        !address.display_name ||
-        !address.search_date) {
+    const { lat, lng, display_name, search_date } = req.body;
+    if (!lat || !lng || !display_name || !search_date) {
         throw new utilities_1.ClientError("All fields are required", 400, "Missing required fields");
     }
-    const updatedAddress = yield (0, AddressesModel_1.updateAddress)(Number(id), address);
+    if (typeof lat !== "string" || typeof lng !== "string") {
+        throw new utilities_1.ClientError("Invalid coordinates", 400, "Latitude and longitude must be strings");
+    }
+    const parsedDate = new Date(search_date);
+    if (isNaN(parsedDate.getTime())) {
+        throw new utilities_1.ClientError("Invalid date format", 400, "The search_date must be a valid date string");
+    }
+    const updatedAddress = yield (0, AddressesModel_1.updateAddress)(Number(id), {
+        id: Number(id),
+        lat,
+        lng,
+        display_name,
+        search_date: parsedDate
+    });
     (0, utilities_1.dataResponse)(res, 200, updatedAddress, "Address updated successfully");
 }));
 exports.remove = (0, utilities_1.catchedAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
