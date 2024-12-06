@@ -116,7 +116,22 @@ export const update = catchedAsync(async (req: Request, res: Response) => {
     )
   }
 
-  const updatedAddress: Addresses = await updateAddress(Number(id), { lat, lng, display_name, search_date })
+  const parsedDate = new Date(search_date)
+  if (isNaN(parsedDate.getTime())) {
+    throw new ClientError(
+      "Invalid date format",
+      400,
+      "The search_date must be a valid date string"
+    )
+  }
+
+  const updatedAddress: Addresses = await updateAddress(Number(id), {
+    id: Number(id),
+    lat,
+    lng,
+    display_name,
+    search_date: parsedDate
+  })
   dataResponse(res, 200, updatedAddress, "Address updated successfully")
 })
 
