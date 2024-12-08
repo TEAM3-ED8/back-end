@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIncludesID = exports.deleteReindeer = exports.updateReindeer = exports.createReindeer = exports.getByIdReindeer = exports.getAllReindeer = void 0;
+exports.deleteReindeerAndUpdateOrganizations = exports.getIncludesID = exports.deleteReindeer = exports.updateReindeer = exports.createReindeer = exports.getByIdReindeer = exports.getAllReindeer = void 0;
 const prisma_1 = require("../prisma");
 const utilities_1 = require("../utilities");
 const getAllReindeer = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -60,7 +60,35 @@ const updateReindeer = (id, reindeer) => __awaiter(void 0, void 0, void 0, funct
 exports.updateReindeer = updateReindeer;
 const deleteReindeer = (_a) => __awaiter(void 0, [_a], void 0, function* ({ id }) {
     yield (0, exports.getByIdReindeer)({ id });
+    // search organizations with reindeer
+    const organizationsWithReindeer = yield prisma_1.prisma.reindeerOrganizations.findMany({
+        where: {
+            positions: {
+                some: {
+                    reindeerId: id
+                }
+            }
+        }
+    });
+    // Update Organizations
+    for (const org of organizationsWithReindeer) {
+        yield prisma_1.prisma.reindeerOrganizations.update({
+            where: { id: org.id },
+            data: {
+                isAvailable: false,
+                isSelected: false,
+                positions: {
+                    updateMany: {
+                        where: { reindeerId: id },
+                        data: { reindeerId: null }
+                    }
+                }
+            }
+        });
+    }
+    // Delete Skills
     yield prisma_1.prisma.skills.deleteMany({ where: { reindeerId: id } });
+    //  Delete Reindeer
     return yield prisma_1.prisma.reindeers.delete({
         where: { id }
     });
@@ -70,3 +98,4 @@ const getIncludesID = (_a) => __awaiter(void 0, [_a], void 0, function* ({ ids }
     return yield prisma_1.prisma.reindeers.findMany({ where: { id: { in: ids } } });
 });
 exports.getIncludesID = getIncludesID;
+exports.deleteReindeerAndUpdateOrganizations = exports.deleteReindeer;

@@ -58,5 +58,5 @@ exports.remove = (0, utilities_1.catchedAsync)((req, res) => __awaiter(void 0, v
         throw new utilities_1.ClientError("Invalid ID", 400, "The ID must be a Number.");
     }
     const deletedReindeer = yield (0, ReindeerModel_1.deleteReindeer)({ id: Number(id) });
-    (0, utilities_1.dataResponse)(res, 200, deletedReindeer, "Reindeer deleted successfully");
+    (0, utilities_1.dataResponse)(res, 200, deletedReindeer, "Reindeer deleted successfully and related organizations updated");
 }));
