@@ -84,6 +84,6 @@ export const remove = catchedAsync(async (req: Request, res: Response) => {
 
   const deletedReindeer: Reindeers = await deleteReindeer({ id: Number(id) })
 
-  dataResponse(res, 200, deletedReindeer, "Reindeer deleted successfully")
+  dataResponse(res, 200, deletedReindeer, "Reindeer deleted successfully and related organizations updated")
 })
 

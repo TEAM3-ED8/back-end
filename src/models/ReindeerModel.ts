@@ -62,8 +62,38 @@ export const updateReindeer = async (
 export const deleteReindeer = async ({ id }: { id: Reindeers["id"] }) => {
   await getByIdReindeer({ id })
 
+  // search organizations with reindeer
+  const organizationsWithReindeer = await prisma.reindeerOrganizations.findMany({
+    where: {
+      positions: {
+        some: {
+          reindeerId: id
+        }
+      }
+    }
+  })
+
+  // Update Organizations
+  for (const org of organizationsWithReindeer) {
+    await prisma.reindeerOrganizations.update({
+      where: { id: org.id },
+      data: {
+        isAvailable: false,
+        isSelected: false,
+        positions: {
+          updateMany: {
+            where: { reindeerId: id },
+            data: { reindeerId: null }
+          }
+        }
+      }
+    })
+  }
+
+  // Delete Skills
   await prisma.skills.deleteMany({ where: { reindeerId: id } })
 
+  //  Delete Reindeer
   return await prisma.reindeers.delete({
     where: { id }
   })
@@ -72,4 +102,6 @@ export const deleteReindeer = async ({ id }: { id: Reindeers["id"] }) => {
 export const getIncludesID = async ({ ids }: { ids: number[] }) => {
   return await prisma.reindeers.findMany({ where: { id: { in: ids } } })
 }
+
+export const deleteReindeerAndUpdateOrganizations = deleteReindeer
 
