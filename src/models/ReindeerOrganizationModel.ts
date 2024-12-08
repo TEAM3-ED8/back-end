@@ -33,6 +33,13 @@ export const getByIdOrganization = async ({
 export const createOrganization = async (
   organization: Omit<ReindeerOrganizations, 'id'> & { positions: Omit<Positions, 'id' | 'organizationId'>[] }
 ) => {
+  if (organization.isSelected) {
+    await prisma.reindeerOrganizations.updateMany({
+      where: { isSelected: true },
+      data: { isSelected: false }
+    });
+  }
+
   const newOrganization = await prisma.reindeerOrganizations.create({
     data: {
       name: organization.name,
@@ -53,6 +60,13 @@ export const updateOrganization = async (
   organization: Omit<ReindeerOrganizations, 'id'> & { positions: Omit<Positions, 'id' | 'organizationId'>[] }
 ) => {
   await getByIdOrganization({ id })
+
+  if (organization.isSelected) {
+    await prisma.reindeerOrganizations.updateMany({
+      where: { isSelected: true, id: { not: id } },
+      data: { isSelected: false }
+    });
+  }
 
   return await prisma.reindeerOrganizations.update({
     where: { id },

@@ -30,6 +30,12 @@ const getByIdOrganization = (_a) => __awaiter(void 0, [_a], void 0, function* ({
 });
 exports.getByIdOrganization = getByIdOrganization;
 const createOrganization = (organization) => __awaiter(void 0, void 0, void 0, function* () {
+    if (organization.isSelected) {
+        yield prisma_1.prisma.reindeerOrganizations.updateMany({
+            where: { isSelected: true },
+            data: { isSelected: false }
+        });
+    }
     const newOrganization = yield prisma_1.prisma.reindeerOrganizations.create({
         data: {
             name: organization.name,
@@ -46,6 +52,12 @@ const createOrganization = (organization) => __awaiter(void 0, void 0, void 0, f
 exports.createOrganization = createOrganization;
 const updateOrganization = (id, organization) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, exports.getByIdOrganization)({ id });
+    if (organization.isSelected) {
+        yield prisma_1.prisma.reindeerOrganizations.updateMany({
+            where: { isSelected: true, id: { not: id } },
+            data: { isSelected: false }
+        });
+    }
     return yield prisma_1.prisma.reindeerOrganizations.update({
         where: { id },
         data: {
