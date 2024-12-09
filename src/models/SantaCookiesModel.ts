@@ -20,6 +20,38 @@ export const createCookie = async (data: CreateCookieInput) => {
   })
 }
 
+export const updateCookie = async (id: number, data: Partial<CreateCookieInput>) => {
+  const cookie = await prisma.cookie.findUnique({
+    where: { id }
+  })
+
+  if (!cookie) {
+    throw new Error("Galleta no encontrada")
+  }
+
+  return await prisma.cookie.update({
+    where: { id },
+    data
+  })
+}
+
+
+export const deleteCookie = async (id: number) => {
+  const cookie = await prisma.cookie.findUnique({
+    where: { id }
+  })
+
+  if (!cookie) {
+    throw new Error("Galleta no encontrada")
+  }
+
+  return await prisma.cookie.delete({
+    where: { id }
+  })
+}
+
+
+
 export const consumeCookies = async (cookieId: number, amount: number) => {
   const cookie = await prisma.cookie.findUnique({
     where: { id: cookieId }

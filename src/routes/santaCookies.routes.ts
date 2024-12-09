@@ -3,7 +3,9 @@ import {
   create,
   consume,
   getStats,
-  getAllCookies
+  getAllCookies,
+  remove,
+  update
 } from "../controllers/SantaCookiesController"
 
 /**
@@ -127,7 +129,60 @@ export const createSantaCookiesRouter = () => {
    *         description: Not enough cookies available
    */
   router.post("/consume", consume)
-
+  /**
+ * @swagger
+ * /api/santaCookies/{id}:
+ *   put:
+ *     summary: Updates an existing cookie
+ *     tags: [SantaCookies]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Cookie ID to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               calories:
+ *                 type: integer
+ *               quantity:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Cookie updated successfully
+ *       400:
+ *         description: Invalid data
+ *       404:
+ *         description: Cookie not found
+ */
+  router.put("/:id", update)
+  /**
+ * @swagger
+ * /api/santaCookies/{id}:
+ *   delete:
+ *     summary: Delete a cookie
+ *     tags: [SantaCookies]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Cookie ID to delete
+ *     responses:
+ *       200:
+ *         description: Cookie successfully removed
+ *       404:
+ *         description: Cookie not found
+ */
+  router.delete("/:id", remove)
   return router
 }
-
