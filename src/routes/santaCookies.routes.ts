@@ -81,7 +81,7 @@ export const createSantaCookiesRouter = () => {
 
   /**
    * @swagger
-   * /api/santaCookies/stats:
+   * /api/cookie/stats:
    *   get:
    *     summary: Get statistics about Santa's cookies
    *     tags: [SantaCookies]
