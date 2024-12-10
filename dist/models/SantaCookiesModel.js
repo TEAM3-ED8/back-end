@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCookieStats = exports.consumeCookies = exports.deleteCookie = exports.updateCookie = exports.createCookie = void 0;
+exports.addCookieQuantity = exports.getCookieStats = exports.consumeCookies = exports.deleteCookie = exports.updateCookie = exports.createCookie = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createCookie = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -27,9 +27,13 @@ const updateCookie = (id, data) => __awaiter(void 0, void 0, void 0, function* (
     if (!cookie) {
         throw new Error("Galleta no encontrada");
     }
+    // Calculamos los valores finales
+    const finalCalories = data.calories || cookie.calories;
+    const finalConsumed = cookie.consumed || 0;
+    const newTotalCalories = finalCalories * finalConsumed;
     return yield prisma.cookie.update({
         where: { id },
-        data
+        data: Object.assign(Object.assign({}, data), { totalCalories: newTotalCalories })
     });
 });
 exports.updateCookie = updateCookie;
@@ -82,3 +86,20 @@ const getCookieStats = () => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 exports.getCookieStats = getCookieStats;
+const addCookieQuantity = (id, additionalQuantity) => __awaiter(void 0, void 0, void 0, function* () {
+    const cookie = yield prisma.cookie.findUnique({
+        where: { id }
+    });
+    if (!cookie) {
+        throw new Error("Galleta no encontrada");
+    }
+    return yield prisma.cookie.update({
+        where: { id },
+        data: {
+            quantity: {
+                increment: additionalQuantity
+            }
+        }
+    });
+});
+exports.addCookieQuantity = addCookieQuantity;

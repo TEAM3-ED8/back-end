@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllCookies = exports.getStats = exports.consume = exports.remove = exports.update = exports.create = void 0;
+exports.addQuantity = exports.getAllCookies = exports.getStats = exports.consume = exports.remove = exports.update = exports.create = void 0;
 const SantaCookiesModel_1 = require("./../models/SantaCookiesModel");
 const utilities_1 = require("../utilities");
 const prisma_1 = require("../prisma");
@@ -146,6 +146,38 @@ exports.getAllCookies = (0, utilities_1.catchedAsync)((_req, res, next) => __awa
         });
     }
     catch (error) {
+        next(error);
+    }
+}));
+exports.addQuantity = (0, utilities_1.catchedAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    if (!id) {
+        res.status(400).json({
+            error: "El ID es requerido"
+        });
+        return;
+    }
+    if (!quantity || isNaN(Number(quantity))) {
+        res.status(400).json({
+            error: "La cantidad debe ser un número válido"
+        });
+        return;
+    }
+    try {
+        const updatedCookie = yield (0, SantaCookiesModel_1.addCookieQuantity)(Number(id), Number(quantity));
+        res.status(200).json({
+            message: "Cantidad de galletas actualizada exitosamente",
+            data: updatedCookie
+        });
+    }
+    catch (error) {
+        if (error instanceof Error && error.message === "Galleta no encontrada") {
+            res.status(404).json({
+                error: error.message
+            });
+            return;
+        }
         next(error);
     }
 }));

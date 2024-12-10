@@ -173,6 +173,85 @@ const createSantaCookiesRouter = () => {
    *         description: Cookie not found
    */
     router.delete("/:id", SantaCookiesController_1.remove);
+    /**
+     * @swagger
+     * /api/cookie/add-quantity/{id}:
+     *   post:
+     *     summary: Add a specific amount of cookies to existing inventory
+     *     tags: [SantaCookies]
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         schema:
+     *           type: integer
+     *         description: Cookie ID to update
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               quantity:
+     *                 type: integer
+     *                 description: Quantity of cookies to add
+     *             required:
+     *               - quantity
+     *           example:
+     *             quantity: 50
+     *     responses:
+     *       200:
+     *         description: Cookie quantity updated successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *                   example: "Cookie quantity updated successfully"
+     *                 data:
+     *                   type: object
+     *                   properties:
+     *                     id:
+     *                       type: integer
+     *                     name:
+     *                       type: string
+     *                     calories:
+     *                       type: integer
+     *                     quantity:
+     *                       type: integer
+     *                     consumed:
+     *                       type: integer
+     *                     totalCalories:
+     *                       type: integer
+     *                     createdAt:
+     *                       type: string
+     *                     santaId:
+     *                       type: integer
+     *       400:
+     *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 error:
+     *                   type: string
+     *                   example: "The amount must be a valid number"
+     *       404:
+     *         description: Cookie not found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 error:
+     *                   type: string
+     *                   example: "Cookie not found"
+     */
+    router.post("/add-quantity/:id", SantaCookiesController_1.addQuantity);
     return router;
 };
 exports.createSantaCookiesRouter = createSantaCookiesRouter;
