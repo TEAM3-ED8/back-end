@@ -13,7 +13,7 @@ const options = {
     },
     servers: [
       {
-        url: process.env.DATABASE_URL || 'http://localhost:3000',
+        url: process.env.PROD_URL || 'http://localhost:8080',
         description: 'Development server',
       },
     ],
