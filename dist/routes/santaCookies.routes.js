@@ -33,7 +33,7 @@ const createSantaCookiesRouter = () => {
     const router = (0, express_1.Router)();
     /**
      * @swagger
-     * /api/santaCookies:
+     * /api/cookie:
      *   get:
      *     summary: Retrieve all Santa's cookies
      *     tags: [SantaCookies]
@@ -50,7 +50,7 @@ const createSantaCookiesRouter = () => {
     router.get("/", SantaCookiesController_1.getAllCookies);
     /**
      * @swagger
-     * /api/santaCookies:
+     * /api/cookie:
      *   post:
      *     summary: Create a new cookie entry
      *     tags: [SantaCookies]
@@ -71,7 +71,7 @@ const createSantaCookiesRouter = () => {
     router.post("/", SantaCookiesController_1.create);
     /**
      * @swagger
-     * /api/santaCookies/stats:
+     * /api/cookie/stats:
      *   get:
      *     summary: Get statistics about Santa's cookies
      *     tags: [SantaCookies]
@@ -93,7 +93,7 @@ const createSantaCookiesRouter = () => {
     router.get("/stats", SantaCookiesController_1.getStats);
     /**
      * @swagger
-     * /api/santaCookies/consume:
+     * /api/cookie/consume:
      *   post:
      *     summary: Consume a certain amount of cookies
      *     tags: [SantaCookies]
@@ -118,6 +118,61 @@ const createSantaCookiesRouter = () => {
      *         description: Not enough cookies available
      */
     router.post("/consume", SantaCookiesController_1.consume);
+    /**
+   * @swagger
+   * /api/cookie/{id}:
+   *   put:
+   *     summary: Updates an existing cookie
+   *     tags: [SantaCookies]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: integer
+   *         required: true
+   *         description: Cookie ID to update
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               name:
+   *                 type: string
+   *               calories:
+   *                 type: integer
+   *               quantity:
+   *                 type: integer
+   *     responses:
+   *       200:
+   *         description: Cookie updated successfully
+   *       400:
+   *         description: Invalid data
+   *       404:
+   *         description: Cookie not found
+   */
+    router.put("/:id", SantaCookiesController_1.update);
+    /**
+   * @swagger
+   * /api/cookie/{id}:
+   *   delete:
+   *     summary: Delete a cookie
+   *     tags: [SantaCookies]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: integer
+   *         required: true
+   *         description: Cookie ID to delete
+   *     responses:
+   *       200:
+   *         description: Cookie successfully removed
+   *       404:
+   *         description: Cookie not found
+   */
+    router.delete("/:id", SantaCookiesController_1.remove);
     return router;
 };
 exports.createSantaCookiesRouter = createSantaCookiesRouter;

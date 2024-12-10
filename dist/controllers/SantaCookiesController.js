@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllCookies = exports.getStats = exports.consume = exports.create = void 0;
+exports.getAllCookies = exports.getStats = exports.consume = exports.remove = exports.update = exports.create = void 0;
 const SantaCookiesModel_1 = require("./../models/SantaCookiesModel");
 const utilities_1 = require("../utilities");
 const prisma_1 = require("../prisma");
@@ -38,6 +38,63 @@ exports.create = (0, utilities_1.catchedAsync)((req, res, next) => __awaiter(voi
         next(error);
     }
 }));
+exports.update = (0, utilities_1.catchedAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const { name, calories, quantity } = req.body;
+    if (!id) {
+        res.status(400).json({
+            error: "El ID es requerido"
+        });
+        return;
+    }
+    if (!name && !calories && !quantity) {
+        res.status(400).json({
+            error: "Al menos uno de los campos (name, calories, quantity) es requerido"
+        });
+        return;
+    }
+    try {
+        const updatedCookie = yield (0, SantaCookiesModel_1.updateCookie)(Number(id), Object.assign(Object.assign(Object.assign({}, (name && { name })), (calories && { calories })), (quantity && { quantity })));
+        res.status(200).json({
+            message: "Galleta actualizada exitosamente",
+            data: updatedCookie
+        });
+    }
+    catch (error) {
+        if (error instanceof Error && error.message === "Galleta no encontrada") {
+            res.status(404).json({
+                error: error.message
+            });
+            return;
+        }
+        next(error);
+    }
+}));
+exports.remove = (0, utilities_1.catchedAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    if (!id) {
+        res.status(400).json({
+            error: "El ID es requerido"
+        });
+        return;
+    }
+    try {
+        const deletedCookie = yield (0, SantaCookiesModel_1.deleteCookie)(Number(id));
+        res.status(200).json({
+            message: "Galleta eliminada exitosamente",
+            data: deletedCookie
+        });
+    }
+    catch (error) {
+        if (error instanceof Error && error.message === "Galleta no encontrada") {
+            res.status(404).json({
+                error: error.message
+            });
+            return;
+        }
+        next(error);
+    }
+}));
 exports.consume = (0, utilities_1.catchedAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { cookieId, amount } = req.body;
     if (!cookieId || !amount) {
@@ -54,7 +111,8 @@ exports.consume = (0, utilities_1.catchedAsync)((req, res, next) => __awaiter(vo
         });
     }
     catch (error) {
-        if (error instanceof Error && error.message === "Galletas insuficientes") {
+        if (error instanceof Error &&
+            error.message === "Galletas insuficientes") {
             res.status(400).json({
                 error: error.message
             });
