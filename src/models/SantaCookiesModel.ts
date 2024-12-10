@@ -23,16 +23,24 @@ export const createCookie = async (data: CreateCookieInput) => {
 export const updateCookie = async (id: number, data: Partial<CreateCookieInput>) => {
   const cookie = await prisma.cookie.findUnique({
     where: { id }
-  })
+  });
 
   if (!cookie) {
-    throw new Error("Galleta no encontrada")
+    throw new Error("Galleta no encontrada");
   }
+
+  // Calculamos los valores finales
+  const finalCalories = data.calories || cookie.calories;
+  const finalConsumed = cookie.consumed || 0;
+  const newTotalCalories = finalCalories * finalConsumed;
 
   return await prisma.cookie.update({
     where: { id },
-    data
-  })
+    data: {
+      ...data,
+      totalCalories: newTotalCalories
+    }
+  });
 }
 
 
@@ -90,4 +98,23 @@ export const getCookieStats = async () => {
     consumedCookies: cookies.reduce((sum, cookie) => sum + (cookie.consumed || 0), 0),
     totalCalories: cookies.reduce((sum, cookie) => sum + (cookie.totalCalories || 0), 0)
   }
+}
+
+export const addCookieQuantity = async (id: number, additionalQuantity: number) => {
+  const cookie = await prisma.cookie.findUnique({
+    where: { id }
+  });
+
+  if (!cookie) {
+    throw new Error("Galleta no encontrada");
+  }
+
+  return await prisma.cookie.update({
+    where: { id },
+    data: {
+      quantity: {
+        increment: additionalQuantity
+      }
+    }
+  });
 }
