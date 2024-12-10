@@ -41,7 +41,7 @@ export const createSantaCookiesRouter = () => {
 
   /**
    * @swagger
-   * /api/santaCookies:
+   * /api/cookie:
    *   get:
    *     summary: Retrieve all Santa's cookies
    *     tags: [SantaCookies]
@@ -59,7 +59,7 @@ export const createSantaCookiesRouter = () => {
 
   /**
    * @swagger
-   * /api/santaCookies:
+   * /api/cookie:
    *   post:
    *     summary: Create a new cookie entry
    *     tags: [SantaCookies]
@@ -104,7 +104,7 @@ export const createSantaCookiesRouter = () => {
 
   /**
    * @swagger
-   * /api/santaCookies/consume:
+   * /api/cookie/consume:
    *   post:
    *     summary: Consume a certain amount of cookies
    *     tags: [SantaCookies]
@@ -131,7 +131,7 @@ export const createSantaCookiesRouter = () => {
   router.post("/consume", consume)
   /**
  * @swagger
- * /api/santaCookies/{id}:
+ * /api/cookie/{id}:
  *   put:
  *     summary: Updates an existing cookie
  *     tags: [SantaCookies]
@@ -166,7 +166,7 @@ export const createSantaCookiesRouter = () => {
   router.put("/:id", update)
   /**
  * @swagger
- * /api/santaCookies/{id}:
+ * /api/cookie/{id}:
  *   delete:
  *     summary: Delete a cookie
  *     tags: [SantaCookies]
