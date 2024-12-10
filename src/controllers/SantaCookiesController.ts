@@ -4,7 +4,8 @@ import {
   consumeCookies,
   getCookieStats,
   updateCookie,
-  deleteCookie
+  deleteCookie,
+  addCookieQuantity
 } from "./../models/SantaCookiesModel"
 import { catchedAsync } from "../utilities"
 import { prisma } from "../prisma"
@@ -175,3 +176,41 @@ export const getAllCookies = catchedAsync(
     }
   }
 )
+
+export const addQuantity = catchedAsync(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { id } = req.params;
+    const { quantity } = req.body;
+
+    if (!id) {
+      res.status(400).json({
+        error: "El ID es requerido"
+      });
+      return;
+    }
+
+    if (!quantity || isNaN(Number(quantity))) {
+      res.status(400).json({
+        error: "La cantidad debe ser un número válido"
+      });
+      return;
+    }
+
+    try {
+      const updatedCookie = await addCookieQuantity(Number(id), Number(quantity));
+      
+      res.status(200).json({
+        message: "Cantidad de galletas actualizada exitosamente",
+        data: updatedCookie
+      });
+    } catch (error) {
+      if (error instanceof Error && error.message === "Galleta no encontrada") {
+        res.status(404).json({
+          error: error.message
+        });
+        return;
+      }
+      next(error);
+    }
+  }
+);
