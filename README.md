@@ -14,7 +14,7 @@
 
 </div>
 
-## Getting started
+##  Santa's Sight
 
 1. clone this repository
 
@@ -37,10 +37,14 @@
 4. write to .env
 
    ```bash
-   DATABASE_URL=""
-   ```
+   DATABASE_URL="postgresql://postgres:PpVknpeLsATaSpBPvAGPgveCUqtMSDwc@junction.proxy.rlwy.net:29280/railway"
+   ``` -->
 
-5. run the project
+4. run the project
    ```bash
    pnpm run dev
    ```
+
+## 🏗 Entity Relationship Diagram
+
+![Entity Relationship Diagram](public/Diagram.png)
