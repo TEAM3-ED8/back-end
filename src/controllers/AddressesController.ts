@@ -10,7 +10,7 @@ import {
   updateAddress
 } from "./../models/AddressesModel"
 
-// import { prisma } from '../prisma';
+import { prisma } from '../prisma';
 
 export const getAll = catchedAsync(async (req: Request, res: Response) => {
   const { limit } = req.query
