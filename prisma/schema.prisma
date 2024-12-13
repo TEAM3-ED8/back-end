@@ -14,57 +14,102 @@ datasource db {
 }
 
 model Elves {
-  id     Int    @id @default(autoincrement())
-  name   String
-  height String
-  age    Int
+  id        Int     @id @default(autoincrement())
+  name      String
+  age       String
+  address   String
+  height    String
+  email     String
+  isDeleted Boolean @default(false)
 }
 
 model Addresses {
-  id        Int         @id @default(autoincrement())
-  country   String
-  city      String
-  code      String
-  Searches  Searches[]
-  childrens Childrens[]
-}
-
-model Searches {
-  id          Int      @id @default(autoincrement())
-  searched_in DateTime @default(now())
-  address     Addresses @relation(fields: [address_id], references: [id])
-  address_id  Int
+  id           Int      @id @default(autoincrement())
+  lat          String
+  lng          String
+  display_name String
+  search_date  DateTime @default(now())
 }
 
 model Childrens {
-  id         Int      @id @default(autoincrement())
-  name       String
-  age        Int
-  conduct    String
-  address    Addresses @relation(fields: [address_id], references: [id])
-  address_id Int
-  gift       Boolean
-  card       Card[]
+  id            Int     @id @default(autoincrement())
+  name          String
+  behavior      String  @default("Kind")
+  levelBehavior String  @default("Good")
+  gift          Boolean
+  cards         Card[]
 }
 
 model Card {
   id          Int       @id @default(autoincrement())
   content     String
   create_at   DateTime  @default(now())
-  children    Childrens @relation(fields: [children_id], references: [id])
   children_id Int
+  isRead      Boolean   @default(false)
+  children    Childrens @relation(fields: [children_id], references: [id])
 }
 
-model Range {
-  id       Int        @id @default(autoincrement())
-  range    String
-  reindeer Reindeer[]
+model Reindeers {
+  id Int @id @default(autoincrement())
+  name String
+  type String
+  skills Skills[]
+  positions Positions[]
 }
 
-model Reindeer {
-  id                 Int    @id @default(autoincrement())
-  name               String
-  description_of_use String
-  range              Range  @relation(fields: [range_id], references: [id])
-  range_id           Int
+model Skills {
+  id Int @id @default(autoincrement())
+  skill String
+  value Int
+  reindeer Reindeers @relation(fields: [reindeerId], references: [id])
+  reindeerId Int
+}
+
+model ReindeerOrganizations {
+  id Int @id @default(autoincrement())
+  name String
+  isSelected Boolean @default(false)
+  isAvailable Boolean @default(false)
+  positions Positions[]
+}
+
+model Positions {
+  id Int @id @default(autoincrement())
+  position Int
+
+  reindeer Reindeers? @relation(fields: [reindeerId], references: [id])
+  reindeerId Int?
+  
+  reindeerOrganizations ReindeerOrganizations @relation(fields: [organizationId], references: [id])
+  organizationId Int
+}
+
+
+model Members {
+  id       Int    @id @default(autoincrement())
+  name     String
+  image    String
+  role     String
+  message  String
+  github   String
+  linkedin String
+}
+model SantaCalories {
+  id            Int      @id @default(1)
+  totalCookies  Int      @default(0)
+  totalConsumed Int      @default(0) 
+  totalCalories Int      @default(0)
+  cookies       Cookie[]
+}
+
+model Cookie {
+  id            Int           @id @default(autoincrement())
+  name          String
+  calories      Int
+  quantity      Int
+  consumed      Int?          @default(0)
+  totalCalories Int?         @default(0)
+  createdAt     DateTime     @default(now())
+  santa         SantaCalories @relation(fields: [santaId], references: [id])
+  santaId       Int          @default(1)
 }
