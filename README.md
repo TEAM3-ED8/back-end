@@ -14,7 +14,7 @@
 
 </div>
 
-## Getting started
+##  Santa's Sight
 
 1. clone this repository
 
@@ -46,8 +46,6 @@
    pnpm run dev
    ```
 
-6. run data example
+## 🏗 Entity Relationship Diagram
 
-   ```bash
-   pnpm db:seed
-   ```
+![Entity Relationship Diagram](public/Diagram.png)
